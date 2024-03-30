@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="balisage-1-5.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<article xmlns="http://docbook.org/ns/docbook">
+    <title>Adventures in iXML</title>
+    <info>
+        <abstract>
+            <para></para>
+        </abstract>
+        <author>
+            <personname>
+                <firstname>Ari</firstname>
+                <surname>Nordström</surname>
+            </personname>
+            <personblurb>
+                <para/>
+            </personblurb>
+        </author>
+    </info>
+    <section>
+        <title>A Text-based Messaging Standard</title>
+        <para>When pointy brackets still meant SGML and limitations in computing power resulted in
+            short and cryptic element names, military and civil aircraft manufacturers keen on
+            leveraging the power of markup formed working groups tasked with defining specifications
+            intended to standardise aerospace information management. These specifications, today
+            known as <emphasis>the S series</emphasis>, included everything from technical
+            documentation to logistics and messaging. For example, technical documentation
+            —maintenance procedures, parts data, wiring, etc — is called S1000D. The first version
+            in widespread use, <emphasis>Issue 1.7</emphasis>, was as a set of SGML DTDs alongside a
+            hefty document describing exactly how to use those DTDs and how to organise the
+            resulting publications.</para>
+        <para>S1000D has since added support for land and sea vehicles, and moved to XML, dropping
+            DTDs in favour of XML Schemas.  The current specification, <emphasis>Issue
+                5.0</emphasis>, is twice the size of Issue 1.7.</para>
+        <para>The messaging specification, S2000M, <quote>defines the processes, procedures and
+                provides the information for data exchange to be used for material management
+                throughout the lifecycle of a Product.</quote> Unlike S1000D, the first released
+            version, <emphasis>Issue 2.1</emphasis>, chose not to use SGML and instead provided a
+            text-based messaging format. </para>
+    </section>
+</article>
