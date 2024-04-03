@@ -269,7 +269,11 @@ UNT+....'</programlisting>
                         nesting of components within segments in the spec, but you can also argue
                         that there is overlap rather than hierarchy.</para>
                 </footnote>). The message, though, is a series of segments and there is nothing in
-                the format itself to suggest structure beyond flat segments.</para>
+                the format itself to suggest structure beyond flat segments. It's also not a
+                complete example; more <code>CAS</code> and <code>PAS</code> segments are involved<footnote>
+                    <para>The two segments depend on one another, which again is not something
+                        apparent in the format itself.</para>
+                </footnote></para>
         </section>
     </section>
     <bibliography>
