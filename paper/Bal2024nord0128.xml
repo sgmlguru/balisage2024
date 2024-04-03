@@ -23,18 +23,177 @@
             leveraging the power of markup formed working groups tasked with defining specifications
             intended to standardise aerospace information management. These specifications, today
             known as <emphasis>the S series</emphasis>, included everything from technical
-            documentation to logistics and messaging. For example, technical documentation
-            —maintenance procedures, parts data, wiring, etc — is called S1000D. The first version
-            in widespread use, <emphasis>Issue 1.7</emphasis>, was as a set of SGML DTDs alongside a
-            hefty document describing exactly how to use those DTDs and how to organise the
-            resulting publications.</para>
-        <para>S1000D has since added support for land and sea vehicles, and moved to XML, dropping
-            DTDs in favour of XML Schemas.  The current specification, <emphasis>Issue
-                5.0</emphasis>, is twice the size of Issue 1.7.</para>
-        <para>The messaging specification, S2000M, <quote>defines the processes, procedures and
-                provides the information for data exchange to be used for material management
-                throughout the lifecycle of a Product.</quote> Unlike S1000D, the first released
-            version, <emphasis>Issue 2.1</emphasis>, chose not to use SGML and instead provided a
-            text-based messaging format. </para>
+            documentation to logistics and messaging.</para>
+        <section>
+            <title>S1000D</title>
+            <para>The technical documentation specification — maintenance procedures, parts data,
+                wiring, etc — is called S1000D [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                    linkend="s1000d-specs"/>]. The first version in widespread use, <emphasis>Issue
+                    1.7</emphasis>, was as a set of SGML DTDs alongside a hefty document describing
+                exactly how to use those DTDs and how to organise the resulting publications.</para>
+            <para>S1000D has since added support for land and sea vehicles, and moved to XML,
+                dropping DTDs in favour of XML Schemas. The current specification, <emphasis>Issue
+                    5.0</emphasis>, is twice the size of Issue 1.7.</para>
+        </section>
+        <section>
+            <title>S2000M</title>
+            <para>The messaging specification, S2000M, <quote>defines the processes, procedures and
+                    provides the information for data exchange to be used for material management
+                    throughout the lifecycle of a Product.</quote> Unlike S1000D, however, the first
+                released version, <emphasis>Issue 2.1</emphasis> more than 30 years ago, chose not
+                to use SGML and instead provided a text-based format. That format was kept very,
+                very compact to save on that precious computing power, because while the spec is
+                more than 30 years old today, the equipment it was meant to be used on could be
+                closer to 30 years old, back then.</para>
+            <para>Of course, S2000M in its latest incarnation, <emphasis>Issue 7.0</emphasis>, is
+                XML, and it, too, is governed by a set of XML Schemas.</para>
+        </section>
+        <section>
+            <title>The Context</title>
+            <para>Before we dive head first into a 30-year old text format, a few words about the
+                context in which all this happens may prove helpful and address some of the more
+                obvious questions you may have (such as <quote>why, oh why?</quote> or <quote>but
+                    couldn't you just...?</quote>).</para>
+            <para>The products described and updated using the specifications we are discussing here
+                have lifespans of several decades. For example, a jet engine manufactured by a
+                client of the author first flew in the 60s and has been serviced, maintained, and
+                updated ever since. This means that the technical publications for it have had to
+                live for as long — and they need to continue living for several years after the last
+                of those engines has been retired.</para>
+            <para>Obviously, the lifespans alone make a good case for markup, but it's
+                    <emphasis>complicated</emphasis>. The illustrated parts data (IPD) for that 60s
+                engine started out in a proprietary text-based format in a mainframe computer, and
+                while much of the documentation is now provided in SGML or XML formats, depending on
+                the receiver, that mainframe is still in use, even though the downstream processes
+                have been updated multiple times.</para>
+            <para>The point I'm trying to make is that the industry can be surprisingly
+                conservative, partly because that documentation really does need to live for that
+                long, and partly because if you want to keep the planes in the air, making sure the
+                spare parts information remains available is paramount. In other words, an old text
+                format producing IPD pages and another describing IPD messages can be very, very
+                resilient.</para>
+            <para>In fact, some companies may go about their business day in and day out, producing
+                new engine families, models, and variants, keeping the engines flying and in good
+                shape while knowing that yes, they should replace that mainframe. They really
+                should, but they don't.</para>
+            <para>Until one day, the decision is made to tear down the building in which the
+                mainframe lives.</para>
+        </section>
     </section>
+    <section>
+        <title>A 30-Year Old Text Format</title>
+        <para>The S2000M 2.1 specification [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                linkend="s2000m-2.1-spec"/>] is 1739 pages. It's not exactly light bedtime reading,
+            but once you understand the general idea, namely to exchange parts data during the
+            lifecycle of a product. Much of it describes formalia such as how to identify and locate
+            a part, how to provision a new part, provide observations regarding the data from a
+            contractor to a customer, and so on, but there is also a more interesting part that
+            deals with the specifics of the text format describing the messages themselves.</para>
+        <para>There are several types of messages:</para>
+        <itemizedlist>
+            <listitem>
+                <para>Provisioning data; this is split into multiple message types depending on how
+                    the parts are identified, and how the parts data is updated and corrected</para>
+            </listitem>
+            <listitem>
+                <para>Observations and customer-provided data</para>
+            </listitem>
+            <listitem>
+                <para>Codification requests from a contractor</para>
+            </listitem>
+            <listitem>
+                <para>Codification data to the contractor</para>
+            </listitem>
+        </itemizedlist>
+        <para>This translates to eight distinct message types, all of which have a similar
+            layout:</para>
+        <itemizedlist>
+            <listitem>
+                <para>Header — basic identifier and status information</para>
+            </listitem>
+            <listitem>
+                <para>Body — The IP data itself</para>
+            </listitem>
+            <listitem>
+                <para>Trailer — sanity check information (number of segments, basic
+                    identifier</para>
+            </listitem>
+        </itemizedlist>
+        <para>The data is kept in <emphasis>segments</emphasis> and <emphasis>data units</emphasis>.
+            The segments are containers for types of information and contain data units, which are
+            basically a key-value construct with a name (<quote>TEI</quote> or <quote>Text Element
+                Identifier</quote>) and a value (<quote>data element</quote>). The value or data
+            element can be a composite, containing two or more component data elements.</para>
+        <section>
+            <title>Segments</title>
+            <para>Segments have names. Those are called <quote>tags</quote>, a term that obviously
+                means something else today.</para>
+            <para>Here's a completely made-up segment example:</para>
+            <programlisting>SEG+ABC:123+DEF:456'</programlisting>
+            <para>This is the segment known as <code>SEG</code> (a <emphasis>tag</emphasis> name, if
+                you insist). It has two data units, <code>ABC</code> and <code>DEF</code>. You'll
+                notice that the segment tag and each data unit are separated using <code>+</code>
+                characters. The sharp-eyed reader will also note that the segment is ended using an
+                apostrophe (<code>'</code>).</para>
+        </section>
+        <section>
+            <title>Data Units</title>
+            <para>The data units are key-value pairs separated with colons (<code>:</code>). The
+                name, known as <emphasis>TEI</emphasis>, is before that colon while the value
+                    (<quote>data element</quote>) follows after.</para>
+            <para>You might have noticed that each segment <emphasis>tag</emphasis> and TEI are
+                identified using three upper-case letters. This is always the case; S2000M only ever
+                uses 3 upper-case letters for segment and TEI identification<footnote>
+                    <para>Remember what I mentioned above, about saving that precious computing
+                        power?</para>
+                </footnote>.</para>
+            <para>As I briefly mentioned, a data element may be a composite value, meaning that
+                several component values are associated with a single TEI. We have something like
+                this:</para>
+            <programlisting>ABC:12345:AB12:345</programlisting>
+            <para>The TEI <code>ABC</code> has three components with values <quote>12345</quote>,
+                    <quote>AB12</quote>, and <quote>345</quote>, respectively.</para>
+            <para>The specification lists a number of composite data elements, with each component
+                having a very specific meaning, so quite helpfully, the spec spells out each
+                component with a name, a lower-case TEI that is never repeated in the actual
+                message. For example, we might say that the data unit with the TEI <code>ABC</code>
+                is a composite with components <code>def</code> and <code>ghi</code>, but the actual
+                message would include the <code>ABC</code> data unit as <code>ANC:123:456</code>,
+                with <code>def</code> having the value <quote>123</quote> and <code>ghi</code>
+                having the value <quote>456</quote>. In the format, the context is everything; we
+                know that <code>ABC</code> contains two components, <code>def</code> and
+                    <emphasis>ghi</emphasis>; there is no ambiguity.</para>
+            <para>The definitions of those basic character (sets) are similarly narrow. For example,
+                we only get upper-case letters, and beyond the numerical characters we only get a
+                handful of characters, such as equal signs, spaces, question marks, and the like.
+                It's a very narrow set of characters.</para>
+        </section>
+        <section>
+            <title>Data Typing</title>
+            <para>This brings us neatly into the next S2000M feature, data typing.</para>
+            <para>Each data element — the value — is typed. This is meant to be usable in systems
+                conceived long before Bill Gates thought 512 k was all it took, after all. That
+                typing lists not only the character sets allowed<footnote>
+                    <para>And I use the phrase liberally.</para>
+                </footnote> but also the number of characters allowed. The specification is full of
+                constructs like this:</para>
+            <programlisting>an..14</programlisting>
+            <para>This means between 0 and 14 alphanumeric characters. But the spec also lists
+                things like <code>n..2</code> (0–2 numerical characters) and <code>a2</code>
+                (exactly two alphabetic characters)<footnote>
+                    <para>Yes, you really do get the feeling that space was at a premium.</para>
+                </footnote>. Everything is well defined, but as narrowly as possible.</para>
+        </section>
+    </section>
+    <bibliography>
+        <title>Bibliography</title>
+        <bibliomixed xreflabel="S1000D Specifications" xml:id="s1000d-specs"><quote>S1000D
+                Specifications</quote> [online, fetched on 3 April 2024] <link
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="https://users.s1000d.org/Default.aspx"/></bibliomixed>
+        <bibliomixed xml:id="s2000m-2.1-spec"><quote>S2000M Issue 2.1</quote> [online, fetched on 3
+            April 2024] <link
+                xlink:href="https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf"
+                xmlns:xlink="http://www.w3.org/1999/xlink"/></bibliomixed>
+    </bibliography>
 </article>
