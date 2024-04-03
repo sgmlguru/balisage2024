@@ -184,6 +184,42 @@
                     <para>Yes, you really do get the feeling that space was at a premium.</para>
                 </footnote>. Everything is well defined, but as narrowly as possible.</para>
         </section>
+        <section>
+            <title>Message Structures</title>
+            <para>The specification, rather helpfully, includes diagrams outlining the eight message
+                types. <xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                    linkend="fig-csnipd-segments"/>, for example, outlines the segments in a
+                    <emphasis>CSNIPD</emphasis> message.</para>
+            <figure xml:id="fig-csnipd-segments">
+                <title>CSNIPD Message Segments</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/Bal2024nord012801.png"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+            <para>The specification also details the message itself (see ), with the data units in
+                the segments.</para>
+            <figure>
+                <title>CSNIPD Message Structure</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="img/Bal2024nord012802.png"/>
+                    </imageobject>
+                </mediaobject>
+            </figure>
+            <para>This is only half of the story; there is a second diagram detailing the CSNIPD
+                message.</para>
+            <para>Here, the segments are three-letter codes all but <code>IPH</code> ending with
+                    <quote>S</quote>, while the contained data units use the full data unit names
+                rather than the TEI three-letter abbreviations.</para>
+        </section>
+        <section>
+            <title>An Example</title>
+            <para>I'm sure you're dying to see an actual message example. Here's a
+                    <emphasis>CSNIPD</emphasis> message fragment from the spec that I will
+                leave</para>
+        </section>
     </section>
     <bibliography>
         <title>Bibliography</title>
