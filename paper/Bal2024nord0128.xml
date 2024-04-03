@@ -217,8 +217,59 @@
         <section>
             <title>An Example</title>
             <para>I'm sure you're dying to see an actual message example. Here's a
-                    <emphasis>CSNIPD</emphasis> message fragment from the spec that I will
-                leave</para>
+                    <emphasis>CSNIPD</emphasis> message fragment from the spec that I will leave
+                here mostly without comment:</para>
+            <programlisting>UNH+...'
+IPH+IPP:F61170026+MTP:CSNIPD+ISS:D1+TOD:F6117+ADD:D1234+FID:
+S+MOI:1X+DRS:004+DRD:201088+LGE:UK+IPS:LANDING GEAR ASSY'
+VAS+CHG:N+SID:F6117:A11K400000'
+OHS+OSN:1+OBS:**PAM PROPOSED FROM 150189 TO 200189'
+CAS+CHG:N+CSN:32000001 000 +ISN:00A+IND:1+RFS:0+QNA:1+TQL:
+1+PNR:A11K400000+MFC:F6117+NSN:1620'
+CES+CHG:N+SRV:GYL+SMR:XBDDD'
+CES+CHG:N+SRV:FRA+SMR:XBDDD'
+CAS+CHG:N+CSN:32000001 001 +ISN:00A+IND:2+RFS:0+QNA:1+TQL:
+1+PNR:A11B410100+MFC:F6117'
+CBS+RTX:32100001 000 00A'
+CES+CHG:N+SRV....'
+.
+.
+.
+CAS+CHG:N+CSN:32100001 000 +ISN:00A+IND:1+RFS:0+..... +PNR:
+A11B410100+MFC:F6117'
+.
+.
+.
+CAS+CHG:N+CSN:32100002 025 +ISN:00A+IND:2+RES:1+QNA:2+....
+PNR:31599BC060LE+MFC:F6117'
+CBS+ASP:1'
+CES+CHG:N+SRV:GYL+SMR:PAOZZ +RMQ:10+ROQ:5'
+CES+CHG:N+SRV:FRA +SMR:PAOZZ +RMQ:20+ROQ:0'
+.
+.
+.
+CAS+CHG:N+CSN:32100002 036 +ISN:00A+IND:2+RFS:1+QNA:2+...
+PNR:31599BC060LE+MFC:F6117+NSN:1480:'
+PAS+CHG:N+PNR:A11K400000+MFC:F6117+DFP:LANDING GEAR ASSEMBLY'
+.
+.
+PAS+CHG:N+PNR:A11B410100+MFC:.....'
+.
+PAS+CHG:N+PNR:31599BC060LE+MFC:F6117+DFP:WASHER+INC:13393'
+PBS+UOI:EA+SPQ:100+TOP:06+CML:1+SPC:1+PLT:3+STR:0+SLC:
+0+PLC:A+PCD:A'
+PDS+UPR:300+CUR:FRF'
+.
+.
+UNT+....'</programlisting>
+            <para>The headers and trailers are without consequence; the core is actually all about
+                    <code>CAS</code> and <code>PAS</code> segments (and their subsegments<footnote>
+                    <para>My term; these are segments that I consider to be within <code>CAS</code>
+                        and <code>PAS</code>, respectively. There is a very clear grouping and
+                        nesting of components within segments in the spec, but you can also argue
+                        that there is overlap rather than hierarchy.</para>
+                </footnote>). The message, though, is a series of segments and there is nothing in
+                the format itself to suggest structure beyond flat segments.</para>
         </section>
     </section>
     <bibliography>
