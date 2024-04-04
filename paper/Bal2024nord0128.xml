@@ -12,7 +12,14 @@
                 <surname>Nordström</surname>
             </personname>
             <personblurb>
-                <para/>
+                <para>Ari is an independent markup geek based in Göteborg, Sweden. He has provided
+                    angled brackets to many organisations and companies across a number of borders
+                    over the years, some of which deliver the rule of law, help dairy farmers make a
+                    living, and assist in servicing commercial aircraft. And others are just for
+                    fun.</para>
+                <para>Ari is the proud owner and head projectionist of Western Sweden's last
+                    functioning 35/70mm cinema, situated in his garage, which should explain why he
+                    once wrote a paper on automating commercial cinemas using XML.</para>
             </personblurb>
         </author>
     </info>
