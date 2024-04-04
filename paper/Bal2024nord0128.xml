@@ -290,18 +290,21 @@ UNT+....'</programlisting>
                         in?</quote></para>
             </footnote>.</para>
         <para>This paper happened because of the latter. At the time of this writing, the mainframe
-            has a few more months to live and the migration into new systems and software
+            has a few more months to live, and the migration into new systems and software
                 <emphasis>must</emphasis> be complete by then. There are any number of problems to
             solve, data to migrate, and processes to replace, and while the approach is to introduce
             a drop-in replacement for the mainframe — the idea is to keep the inputs and outputs as
             close to the current architecture as possible — the project is still an absolutely
             massive undertaking.</para>
-        <para>The author's role in the project is to make sure that it remains possible to store,
+        <para>Yours truly's role in the project is to make sure that it remains possible to store,
             process, and send across illustrated parts data to every system that currently depends
             on the mainframe once that mainframe is decommissioned<footnote>
                 <para>There are a number of other potential subjects for Blisage papers there. Alas,
                     there is no time.</para>
-            </footnote>.</para>
+            </footnote>. Here, it must be noted that currently, the actual Illustrated Parts
+            Catalogues are all produced by either proprietary software converting the text-based
+            mainframe output to SGML or XML, or by third parties doing the same, again from the
+            text-based mainframe output.</para>
         <para>A critical process involves exchanging IPD messages between the client and their
             partners and customers. The data exchange system and processes were first introduced
             when the client became involved in a multinational aerospace project. The decision was
@@ -315,7 +318,78 @@ UNT+....'</programlisting>
             every time. This introduces several other problems, however, most importantly that the
             spec is not backwards-compatible to that extent, and certainly not between the very
             oldest and the very newest issues. It's not a viable option either.</para>
-        <para>We need to stick with 2.1 for this.</para>
+        <section>
+            <title>Sticking with Issue 2.1</title>
+            <para>The mainframe S2000M implementation is lacking in several respects. There's not
+                enough processing power and concurrent users are not really a thing; you have to
+                book time on it, and an entire day is blocked every week for various batch processes
+                that can't be done during night-time. Authoring and receiving messages is very much
+                a manual process, involving a series of cryptically named, tiny text-based
+                interfaces or <quote>screens</quote> where you type in equally cryptic commands or
+                read incoming messages by flipping through multiple screens. It's not what you might
+                call <quote>intuitive</quote>.</para>
+            <para>As the S2000M messaging was implemented on top of an upgrade of an earlier system,
+                there are any number of legacy screens and internal logic that are not always fully
+                documented or even understood<footnote>
+                    <para>Many of the original engineers are no longer around, to put it
+                        mildly.</para>
+                </footnote>. Also, as another consequence of the implementation on top of an
+                upgrade, the S2000M segments and data units do not use S2000M naming; instead, they
+                use existing database field names.</para>
+            <para>It probably goes without saying that we don't actually want to replicate the
+                mainframe inputs and outputs exactly. For example, there's no need to copy the many
+                screens to author or present a message, nor is it necessary to keep the downstream
+                systems that translate between the mainframe S2000M flavour and the
+                    <quote>proper</quote> S2000M format. We should be able to handle S2000M
+                as-is.</para>
+            <para>But S2000M Issue 2.1 is not widely implemented. You can't buy an off-the-shelf
+                product, and there is no open-source library available on Github. If you need it,
+                you probably need to implement it yourself. At the same time, the client now accepts
+                that the old specifications do need to be upgraded, eventually. The intention is to
+                start using the entire S-series of specifications and start authoring directly in
+                XML in the new system that will eventually include a CSDB<footnote>
+                    <para>Common Source Database, an S1000D term for what is essentially a
+                        specialised CMS and publishing platform for S1000D content.</para>
+                </footnote>. It makes sense, then, to plan for upgrading S2000M as well. Just not
+                now.</para>
+            <para>But do we actually want to implement a 30-year old text-based specification,
+                especially if it's going to go away soon?</para>
+        </section>
+    </section>
+    <section>
+        <title>iXML to the Rescue</title>
+        <para>For the longest time, I thought of iXML [<xref
+                xmlns:xlink="http://www.w3.org/1999/xlink" linkend="ixml-spec"/>] as a very cool but
+            maybe not all that useful idea. How wrong I was! Invisible XML [<xref
+                xmlns:xlink="http://www.w3.org/1999/xlink" linkend="ixml-webpage"/>] <quote>is a
+                language for describing the implicit structure of data, and a set of technologies
+                for making that structure explicit as XML markup</quote>. The idea is that given an
+            implicit structure (dates are often provided as examples), it is possible to express
+            that structure as an iXML grammar and then use the grammar and an iXML application to
+            serialise an instance using the grammar in XML format, with explicit structures.</para>
+        <para>This is not the place to walk you through iXML — the Invisible XML home on the web
+                [<xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="ixml-webpage"/>] links to
+            several tutorials, so start there — but let me give you an example<footnote>
+                <para>And I'm sure you can see where this is going.</para>
+            </footnote>. Given this implicit structure:</para>
+        <programlisting>SEG+ABC:123+DEF:456'</programlisting>
+        <para>And this grammar:</para>
+        <programlisting>SEG = -"SEG", sep, ABC, sep, DEF, segend .
+-sep = -"+" .
+-segend = -"'", (#9 | #a0 | #a | #d)* .
+-comp-sep = -":" .
+-num = [N] .
+-n3 = num, num, num .
+ABC = -"ABC", comp-sep, n3 .
+DEF = -"DEF", comp-sep, n3 .</programlisting>
+        <para>We get this XML:</para>
+        <programlisting language="xml">&lt;SEG>
+   &lt;ABC>123&lt;/ABC>
+   &lt;DEF>456&lt;/DEF>
+&lt;/SEG></programlisting>
+        <para>But don't take my word for it. John Lumley's implemented an iXML processor running
+            under Saxon JS [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                linkend="lumley-ixml-processor"/>] that allows you to test it in the browser.</para>
     </section>
     <bibliography>
         <title>Bibliography</title>
@@ -327,5 +401,14 @@ UNT+....'</programlisting>
             April 2024] <link
                 xlink:href="https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf"
                 xmlns:xlink="http://www.w3.org/1999/xlink"/></bibliomixed>
+        <bibliomixed xml:id="ixml-spec"><quote>Invisible XML Specification</quote> [online, fetched
+            on 4 April] <link xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="https://invisiblexml.org/1.0/"/></bibliomixed>
+        <bibliomixed xml:id="ixml-webpage"><quote>Invisible XML</quote> [online, fetched on 4 April
+            2024] <link xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="https://invisiblexml.org/"/></bibliomixed>
+        <bibliomixed xml:id="lumley-ixml-processor"><quote>jωiXML processor</quote> [online, fetched
+            on 4 April 2024] <link xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:href="https://johnlumley.github.io/jwiXML.xhtml"/></bibliomixed>
     </bibliography>
 </article>
