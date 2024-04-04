@@ -374,14 +374,16 @@ UNT+....'</programlisting>
             implicit structure (dates are often provided as examples), it is possible to express
             that structure as an iXML grammar and then use the grammar and an iXML application to
             serialise an instance using the grammar in XML format, with explicit structures.</para>
-        <para>This is not the place to walk you through iXML — the Invisible XML home on the web
-                [<xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="ixml-webpage"/>] links to
-            several tutorials, so start there — but let me give you an example<footnote>
-                <para>And I'm sure you can see where this is going.</para>
-            </footnote>. Given this implicit structure:</para>
-        <programlisting>SEG+ABC:123+DEF:456'</programlisting>
-        <para>And this grammar:</para>
-        <programlisting>SEG = -"SEG", sep, ABC, sep, DEF, segend .
+        <section>
+            <title>A Simple Example</title>
+            <para>This is not the place to walk you through iXML — the Invisible XML home on the web
+                    [<xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="ixml-webpage"/>]
+                links to several tutorials, so start there — but let me give you an example<footnote>
+                    <para>And I'm sure you can see where this is going.</para>
+                </footnote>. Given this implicit structure:</para>
+            <programlisting>SEG+ABC:123+DEF:456'</programlisting>
+            <para>And this grammar:</para>
+            <programlisting>SEG = -"SEG", sep, ABC, sep, DEF, segend .
 -sep = -"+" .
 -segend = -"'", (#9 | #a0 | #a | #d)* .
 -comp-sep = -":" .
@@ -389,14 +391,32 @@ UNT+....'</programlisting>
 -n3 = num, num, num .
 ABC = -"ABC", comp-sep, n3 .
 DEF = -"DEF", comp-sep, n3 .</programlisting>
-        <para>We get this XML:</para>
-        <programlisting language="xml">&lt;SEG>
+            <para>We get this XML:</para>
+            <programlisting language="xml">&lt;SEG>
    &lt;ABC>123&lt;/ABC>
    &lt;DEF>456&lt;/DEF>
 &lt;/SEG></programlisting>
-        <para>But don't take my word for it. John Lumley's implemented an iXML processor running
-            under Saxon JS [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
-                linkend="lumley-ixml-processor"/>] that allows you to test it in the browser.</para>
+            <para>But don't take my word for it. John Lumley's implemented an iXML processor running
+                under Saxon JS [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                    linkend="lumley-ixml-processor"/>] that allows you to test the above in the
+                browser.</para>
+        </section>
+        <section>
+            <title>S2000M Grammar Considerations</title>
+            <para>It turns out that while expressing the S2000M message formats as iXML grammars is
+                a lot of work, it's perfectly doable.</para>
+            <!--CSNIPD example message-->
+            <!--CSNIPD example grammar-->
+            <!--Removing separators, text strings, etc-->
+            <!--Data types discussion-->
+        </section>
+        <section>
+            <title>So, Now That I've Got the XML...</title>
+            <para>...what do I do with it?</para>
+            <para>Well, XML, unlike S2000M Issue 2.1, has a full ecosystem with editors,
+                transformation languages, etc. To start with, can we author messages using the XML
+                format?</para>
+        </section>
     </section>
     <bibliography>
         <title>Bibliography</title>
