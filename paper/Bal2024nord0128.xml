@@ -85,10 +85,12 @@
         <para>The S2000M 2.1 specification [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
                 linkend="s2000m-2.1-spec"/>] is 1739 pages. It's not exactly light bedtime reading,
             but once you understand the general idea, namely to exchange parts data during the
-            lifecycle of a product. Much of it describes formalia such as how to identify and locate
-            a part, how to provision a new part, provide observations regarding the data from a
-            contractor to a customer, and so on, but there is also a more interesting part that
-            deals with the specifics of the text format describing the messages themselves.</para>
+            lifecycle of a product, it is quite useful. Much of it describes formalia such as how to
+            identify and locate a part, how to provision a new part, provide observations regarding
+            the data from a contractor to a customer, and so on, but there is also a more
+            interesting part that deals with the specifics of the text format describing the
+            messages themselves, including data dictionaries covering all aspects of the
+            format.</para>
         <para>There are several types of messages:</para>
         <itemizedlist>
             <listitem>
@@ -269,12 +271,51 @@ UNT+....'</programlisting>
                         nesting of components within segments in the spec, but you can also argue
                         that there is overlap rather than hierarchy.</para>
                 </footnote>). The message, though, is a series of segments and there is nothing in
-                the format itself to suggest structure beyond flat segments. It's also not a
+                the format itself to suggest structure beyond flat segments. It's also far from a
                 complete example; more <code>CAS</code> and <code>PAS</code> segments are involved<footnote>
                     <para>The two segments depend on one another, which again is not something
                         apparent in the format itself.</para>
-                </footnote></para>
+                </footnote>.</para>
         </section>
+    </section>
+    <section>
+        <title>Forcing a Change</title>
+        <para>Again, the industry is traditionally slow to change, having to keep all those planes
+            in the air while being subject to strict regulations. Frequently, change is forced
+            rather than planned, from software no longer being supported to, well, tearing down the
+            building in which a mainframe computer lives<footnote>
+                <para>You could say that the building and the mainframe are a single unit; it's not
+                    obvious which is built into which. The one joke the client is really tired of
+                    hearing is <quote>So, how much do these things weigh? Maybe we could all pitch
+                        in?</quote></para>
+            </footnote>.</para>
+        <para>This paper happened because of the latter. At the time of this writing, the mainframe
+            has a few more months to live and the migration into new systems and software
+                <emphasis>must</emphasis> be complete by then. There are any number of problems to
+            solve, data to migrate, and processes to replace, and while the approach is to introduce
+            a drop-in replacement for the mainframe — the idea is to keep the inputs and outputs as
+            close to the current architecture as possible — the project is still an absolutely
+            massive undertaking.</para>
+        <para>The author's role in the project is to make sure that it remains possible to store,
+            process, and send across illustrated parts data to every system that currently depends
+            on the mainframe once that mainframe is decommissioned<footnote>
+                <para>There are a number of other potential subjects for Blisage papers there. Alas,
+                    there is no time.</para>
+            </footnote>.</para>
+        <para>A critical process involves exchanging IPD messages between the client and their
+            partners and customers. The data exchange system and processes were first introduced
+            when the client became involved in a multinational aerospace project. The decision was
+            made to use S2000M, and an implementation was developed for the mainframe system,
+            already 20+ years old by then.</para>
+        <para>Now, you might think that this would be a great opportunity to move to the latest
+            version of the specification,  Issue 7.0, and I would agree. In principle. However, the
+            many partners and customers currently do expect S2000M 2.1 and asking them to upgrade is
+            obviously not a viable option. </para>
+        <para>We could also move to 7.0 but convert to and from 2.1 for the back-and-forth exchange,
+            every time. This introduces several other problems, however, most importantly that the
+            spec is not backwards-compatible to that extent, and certainly not between the very
+            oldest and the very newest issues. It's not a viable option either.</para>
+        <para>We need to stick with 2.1 for this.</para>
     </section>
     <bibliography>
         <title>Bibliography</title>
