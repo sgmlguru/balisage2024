@@ -92,11 +92,11 @@
         <para>The S2000M 2.1 specification [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
                 linkend="s2000m-2.1-spec"/>] is 1739 pages. It's not exactly light bedtime reading,
             but once you understand the general idea, namely to exchange parts data during the
-            lifecycle of a product, it is quite useful. Much of it describes formalia such as how to
-            identify and locate a part, how to provision a new part, provide observations regarding
-            the data from a contractor to a customer, and so on, but there is also a more
-            interesting part that deals with the specifics of the text format describing the
-            messages themselves, including data dictionaries covering all aspects of the
+            lifecycle of a product, it is quite useful. Much of it describes formal requirements
+            such as how to identify and locate a part, how to provision a new part, provide
+            observations regarding the data from a contractor to a customer, and so on, but there is
+            also a more interesting part that deals with the specifics of the text format describing
+            the messages themselves, including data dictionaries covering all aspects of the
             format.</para>
         <para>There are several types of messages:</para>
         <itemizedlist>
@@ -209,7 +209,7 @@
             </figure>
             <para>The specification also details the message itself (see ), with the data units in
                 the segments.</para>
-            <figure>
+            <figure xml:id="csnipd-structure">
                 <title>CSNIPD Message Structure</title>
                 <mediaobject>
                     <imageobject>
@@ -306,8 +306,8 @@ UNT+....'</programlisting>
         <para>Yours truly's role in the project is to make sure that it remains possible to store,
             process, and send across illustrated parts data to every system that currently depends
             on the mainframe once that mainframe is decommissioned<footnote>
-                <para>There are a number of other potential subjects for Blisage papers there. Alas,
-                    there is no time.</para>
+                <para>There are a number of other potential subjects for Balisage papers there.
+                    Alas, there is no time.</para>
             </footnote>. Here, it must be noted that currently, the actual Illustrated Parts
             Catalogues are all produced by either proprietary software converting the text-based
             mainframe output to SGML or XML, or by third parties doing the same, again from the
@@ -404,11 +404,521 @@ DEF = -"DEF", comp-sep, n3 .</programlisting>
         <section>
             <title>S2000M Grammar Considerations</title>
             <para>It turns out that while expressing the S2000M message formats as iXML grammars is
-                a lot of work, it's perfectly doable.</para>
-            <!--CSNIPD example message-->
-            <!--CSNIPD example grammar-->
-            <!--Removing separators, text strings, etc-->
-            <!--Data types discussion-->
+                a lot of work, it's perfectly doable. Here's a made-up S2000M
+                    <emphasis>CSNIPD</emphasis> (<quote>used for the transmission of IP data which
+                    has been compiled in accordance with the CSN-orientated IP procedure</quote>)
+                example:</para>
+            <programlisting>UNH+123456+CD3456:EF1:FD3:C1:ABC123+'
+IPH+IPP:F61170026+MTP:CSNIPD+ISS:D1+TOD:F6117+ADD:D1234+FID:S+MOI:1X+DRS:004+DRD:201088+LGE:UK+IPS:LANDING GEAR ASSY'
+VAS+CHG:N+SID:12345:X1234999999999999+SNS:1234:123456789'
+OHS+OSN:A1234+OBS:TESTING THIS'
+CAS+CHG:B+CSN:0123456789123+ISN:ABC+IND:9+RFS:0+QNA:123+TQL:ABCDE+PNR:01234567890+MFC:QWERT+NSN:1234:123456789'
+CBS+ASP:1+NIL:Q+RTX:1234567890123456+SMF:X+MFM:THIS IS TEXT+DFL:THIS IS MORE TEXT'
+CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'
+CDS+CTL:1234567+ESC:9+MAP:12+CSR:321'
+CES+CHG:A+SRV:ABC+SMR:654321+RMQ:12345+ROQ:98765'
+CJS+CHG:C+MOV:BA'
+CKS+CHG:D+EFY:ABCDEFGH'
+CFS+CHG:A+RFD:1234567'
+CIS+CHG:B+ILS:09876543211234567890'
+PAS+CHG:F+PNR:123456789123456789123456789+MFC:EDCBA+DFP:THIS IS A DFP TEXT+INC:12345+NSN:1234:123456789+RNC:7+RNV:5+RNJ:3'
+PBS+UOI:AB+SPQ:0123+TOP:QW+ITY:ER+SPC:0+PLT:12+STR:9+SLC:X+PLC:Y+PCD:W'
+PCS+UOM:AB+QUI:1234'
+PDS+UPR:123456789012+CUR:ABC+MSQ:54321+PBD:1:2:3000:4:5:11111111'
+PES+CRT:123+SRA:21+MTI:123456:AB+TBI:123456:CD+TSI:654321:BD+ALI:987654:XY+TLF:123'
+PFS+DMC:ABC123+HAZ:ED12+PIC:8+FTC:X+PSC:Q+ESD:0+CMK:9'
+PGS+SUU:AB345678901234+SPU:CD345678901234+WUU:AB34567+WPU:CD34567'
+UNT+123456+ABCD1234567812'</programlisting>
+            <para>Much of this won't make sense to you, but we can spot the basic constructs, namely
+                segments —the rows starting with a three-letter alphabetic code followed by
+                    <code>+</code> and the row ended with a segment end character (<code>'</code>).
+                Within the segments, we can recognise data units, each separated with a plus
+                    (<code>+</code>) and starting with a TEI (Text Element Identifier) and followed
+                by one or more values, each separated with colons ('<code>:</code>). The
+                specification defines the allowed contents for each segment and their respective
+                data units (see <xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                    linkend="csnipd-structure"/> for an overview), and so the remaining work is
+                simply about to express those contents in a formal grammar:</para>
+            <programlisting>{
+	This is an iXML grammar for S2000M CSNIPD messages.
+	S2000M spec 2.1: https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf
+	iXML information: https://invisiblexml.org/
+
+	Grammar tested with https://johnlumley.github.io/jwiXML.xhtml
+}
+
+
+
+CSNIPD = level0 .
+
+level0 = UNH, IPH, level1, UNT .
+level1 = VAS, OHS, cas-level1, pas-level1 .
+
+cas-level1 = CAS, cas-level2 .
+cas-level2 = CBS, CCS, CDS, CES, cas-level3, CFS, CIS .
+cas-level3 = CJS, cas-level4 .
+cas-level4 = CKS .
+
+pas-level1 = PAS, pas-level2 .
+pas-level2 = PBS, PCS, PDS, PES, PFS, PGS .
+
+
+@segend = -"'", (#9 | #a0 | #a | #d)* .
+-sep = -"+" .
+-comp-sep = -":" .
+
+-alpha = [L] .
+-num = [N] .
+-other-level-a = [" !.,(;&amp;&lt;>%*=)"; #22] .
+-an = (alpha | num | other-level-a) .
+
+-num0-6 = (num? | num, num | num, num, num | num, num, num, num | num, num, num, num, num | num, num, num, num, num, num) .
+-an0-2 = (an? | an, an) .
+-an0-3 = (an? | an, an | an, an, an) .
+-an0-6 = (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an) .
+-an0-14 = (...) .
+
+no-segments-0074 = num0-6 .
+msg-no-0062 = an0-14 .
+msg-type-0065 = an0-6 .
+msg-version-nbr-0052 = an0-3 .
+msg-rel-nbr-0054 = an0-3 .
+ctrl-agency-0051 = an0-2 .
+assoc-assign-code-0057 = an0-6 .
+
+message-identifier-S009 = msg-type-0065, comp-sep, msg-version-nbr-0052, comp-sep, msg-rel-nbr-0054, comp-sep, ctrl-agency-0051, comp-sep, assoc-assign-code-0057? .
+
+UNH = -"UNH", sep, msg-no-0062, sep, message-identifier-S009, sep, segend .
+UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .
+
+IPP = -"IPP", comp-sep, an, an, an, an, an, an, an, an, an .
+MTP = -"MTP", comp-sep, an0-6 .
+ISS = -"ISS", comp-sep, an, an .
+TOD = -"TOD", comp-sep, an, an, an, an, an .
+ADD = -"ADD", comp-sep, an, an, an, an, an .
+FID = -"FID", comp-sep, alpha .
+MOI = -"MOI", comp-sep, an, an .
+DRS = -"DRS", comp-sep, num, num, num .
+DRD = -"DRD", comp-sep, num, num, num, num, num, num .
+LGE = -"LGE", comp-sep, alpha, alpha .
+IPS = -"IPS", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an | an, an, an, an, an, an, an | an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an) .
+DRR = "DRR", comp-sep, an, an, an, an, an, an, an, an .
+
+{
+	IPH groups based on essentiality
+}
+-IPH-1 = IPP, sep, MTP, sep, ISS, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS .
+-IPH-2 = IPP, sep, MTP, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS, sep, DRR? .
+-IPH-3 = IPP, sep, MTP, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS .
+-IPH-group = (IPH-1 | IPH-2 | IPH-3) .
+
+IPH = -"IPH", sep, IPH-group, segend .
+
+CHG = -"CHG", comp-sep, alpha .
+
+mfc = an, an, an, an, an .
+-an0-32 = (...) .
+pnr = an0-32 .
+SID = -"SID", comp-sep, mfc, comp-sep, pnr .
+
+nsc = num, num, num, num .
+nin = num, num, num, num, num, num, num, num, num .
+SNS = -"SNS", comp-sep, nsc, comp-sep, nin .
+
+VAS = -"VAS", sep, CHG, sep, SID, sep, SNS, segend .
+
+-osn-model = (an? | an, an | an, an, an | an, an, an, an, an) .
+OSN = -"OSN", comp-sep, osn-model .
+OBS = -"OBS", comp-sep, an* . {This is 0-130 chars}
+
+OHS = -"OHS", sep, OSN, sep, OBS, segend .
+
+CSN = -"CSN", comp-sep, an, an, an, an, an, an, an, an, an, an, an, an, an .
+ISN = -"ISN", comp-sep, an, an, an .
+IND = -"IND", comp-sep, num .
+RFS = -"RFS", comp-sep, num .
+QNA = -"QNA", comp-sep, (an? | an, an | an, an, an | an, an, an, an) .
+TQL = -"TQL", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an) .
+PNR = -"PNR", comp-sep, -pnr .
+MFC = -"MFC", comp-sep, -mfc .
+NSN = -"NSN", comp-sep, nsc, comp-sep, nin .
+
+CAS = -"CAS", sep, CHG, sep, CSN, sep, ISN, sep, IND, sep, RFS, sep, QNA, sep, TQL, sep, PNR, sep, MFC, sep, NSN, segend .
+
+ASP = -"ASP", comp-sep, num .
+NIL = -"NIL", comp-sep, an .
+RTX = -"RTX", comp-sep, (...) .
+SMF = -"SMF", comp-sep, alpha .
+MFM = -"MFM", comp-sep, an* {0-40 alphanumeric chars} .
+DFL = -"DFL", comp-sep, an* {0-130 alphanumeric chars} .
+
+CBS = -"CBS", sep, ASP, sep, NIL, sep, RTX, sep, SMF, sep, MFM, sep, DFL, segend .
+
+UCE = -"UCE", comp-sep, an, an, an, an, an, an, an, an .
+UCA = -"UCA", comp-sep, an, an, an, an, an, an .
+ICY = -"ICY", comp-sep, an, an .
+
+CCS = -"CCS", sep, UCE, sep, UCA, sep, ICY, segend .
+
+CTL = -"CTL", comp-sep, an, an, an, an, an, an, an .
+ESC = -"ESC", comp-sep, num .
+-num0-2 = (num? | num, num) .
+MAP = -"MAP", comp-sep, num0-2 .
+-num0-3 = (num? | num, num | num, num, num) .
+CSR = -"CSR", comp-sep, num0-3 .
+
+CDS = -"CDS", sep, CTL, sep, ESC, sep, MAP, sep, CSR, segend .
+
+-num0-5 = (num? | num, num | num, num, num | num, num, num, num | num, num, num, num, num) .
+SRV = -"SRV", comp-sep, (an? | an, an | an, an, an) .
+SMR = -"SMR", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an, an) .
+RMQ = -"RMQ", comp-sep, num0-5 .
+ROQ = -"ROQ", comp-sep, num0-5 .
+
+CES = -"CES", sep, CHG, sep, SRV, sep, SMR, sep, RMQ, sep, ROQ, segend .
+
+RFD = -"RFD", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an | an, an, an, an, an, an, an) .
+
+CFS = -"CFS", sep, CHG, sep, RFD, segend .
+
+ILS = -"ILS", comp-sep, (...) .
+
+CIS = -"CIS", sep, CHG, sep, ILS, segend .
+
+MOV = -"MOV", comp-sep, (an? | an, an) .
+
+CJS = -"CJS", sep, CHG, sep, MOV, segend .
+
+EFY = -"EFY", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an | an, an, an, an, an, an, an | an, an, an, an, an, an, an, an) .
+
+CKS = -"CKS", sep, CHG, sep, EFY, segend .
+
+
+DFP = -"DFP", comp-sep, an* {0-130 alphanumeric} .
+INC = -"INC", comp-sep, an, an, an, an, an .
+RNC = -"RNC", comp-sep, an .
+RNV = -"RNV", comp-sep, num .
+RNJ = -"RNJ", comp-sep, num .
+
+PAS = -"PAS", sep, CHG, sep, PNR, sep, MFC, sep, DFP, sep, INC, sep, NSN, sep, RNC, sep, RNV, sep, RNJ, segend .
+
+UOI = -"UOI", comp-sep, alpha, alpha .
+SPQ = -"SPQ", comp-sep, (num? | num, num | num, num, num | num, num, num, num) .
+TOP = -"TOP", comp-sep, an, an .
+ITY = -"ITY", comp-sep, an, an .
+SPC = -"SPC", comp-sep, num .
+PLT = -"PLT", comp-sep, num0-2 .
+STR = -"STR", comp-sep, num .
+SLC = -"SLC", comp-sep, an .
+PLC = -"PLC", comp-sep, an .
+PCD = -"PCD", comp-sep, (an? | an, an) .
+
+PBS = -"PBS", sep, UOI, sep, SPQ, sep, TOP, sep, ITY, sep, SPC, sep, PLT, sep, STR, sep, SLC, sep, PLC, sep, PCD, segend .
+
+UOM = -"UOM", comp-sep, an, an .
+QUI = -"QUI", comp-sep, (num? | num, num | num, num, num | num, num, num, num) .
+
+PCS = -"PCS", sep, UOM, sep, QUI, segend .
+
+-num0-12 = (...) .
+UPR = -"UPR", comp-sep, num0-12 .
+CUR = -"CUR", comp-sep, alpha, alpha, alpha .
+MSQ = -"MSQ", comp-sep, num0-5 .
+
+qty = num0-5 .
+upr = num0-12 .
+
+PBD = -"PBD", comp-sep, qty, comp-sep, qty, comp-sep, upr, (comp-sep, qty, comp-sep, qty, comp-sep, upr)* {0-2 repetitions} .
+
+PDS = -"PDS", sep, UPR, sep, CUR, sep, MSQ, sep, PBD, segend .
+
+CRT = -"CRT", comp-sep, num0-3 .
+SRA = -"SRA", comp-sep, num0-2 .
+-alpha0-2 = (alpha? | alpha, alpha) .
+tbf = num0-6 .
+tcm = alpha0-2 .
+MTI = -"MTI", comp-sep, tbf, comp-sep, tcm .
+tbo = num0-6 .
+tco = alpha0-2 .
+TBI = -"TBI", comp-sep, tbo, comp-sep, tco .
+tsv = num0-6 .
+tcs = alpha0-2 .
+TSI = -"TSI", comp-sep, tsv, comp-sep, tcs .
+aul = num0-6 .
+tca = alpha0-2 .
+ALI = -"ALI", comp-sep, aul, comp-sep, tca .
+TLF = -"TLF", comp-sep, num0-3 .
+
+PES = -"PES", sep, CRT, sep, SRA, sep, MTI, sep, TBI, sep, TSI, sep, ALI, sep, TLF, segend .
+
+DMC = -"DMC", comp-sep, an0-6 .
+
+HAZ = -"HAZ", comp-sep, an, an, an, an .
+PIC = -"PIC", comp-sep, num .
+FTC = -"FTC", comp-sep, an .
+PSC = -"PSC", comp-sep, an .
+ESD = -"ESD", comp-sep, num .
+CMK = -"CMK", comp-sep, num .
+
+PFS = -"PFS", sep, DMC, sep, HAZ, sep, PIC, sep, FTC, sep, PSC, sep, ESD, sep, CMK, segend .
+
+-an14 = an, an, an, an, an, an, an, an, an, an, an, an, an, an .
+SUU = -"SUU", comp-sep, an14 .
+SPU = -"SPU", comp-sep, an14 .
+-an7 = an, an, an, an, an, an, an .
+WUU = -"WUU", comp-sep, an7 .
+WPU = -"WPU", comp-sep, an7 .
+
+PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
+
+</programlisting>
+            <para>The XML serialisation is as follows:</para>
+            <programlisting>&lt;CSNIPD>
+   &lt;level0>
+      &lt;UNH segend="&amp;#10;">
+         &lt;msg-no-0062>123456&lt;/msg-no-0062>
+         &lt;message-identifier-S009>
+            &lt;msg-type-0065>CD3456&lt;/msg-type-0065>
+            &lt;msg-version-nbr-0052>EF1&lt;/msg-version-nbr-0052>
+            &lt;msg-rel-nbr-0054>FD3&lt;/msg-rel-nbr-0054>
+            &lt;ctrl-agency-0051>C1&lt;/ctrl-agency-0051>
+            &lt;assoc-assign-code-0057>ABC123&lt;/assoc-assign-code-0057>
+         &lt;/message-identifier-S009>
+      &lt;/UNH>
+      &lt;IPH segend="&amp;#10;">
+         &lt;IPP>F61170026&lt;/IPP>
+         &lt;MTP>CSNIPD&lt;/MTP>
+         &lt;ISS>D1&lt;/ISS>
+         &lt;TOD>F6117&lt;/TOD>
+         &lt;ADD>D1234&lt;/ADD>
+         &lt;FID>S&lt;/FID>
+         &lt;MOI>1X&lt;/MOI>
+         &lt;DRS>004&lt;/DRS>
+         &lt;DRD>201088&lt;/DRD>
+         &lt;LGE>UK&lt;/LGE>
+         &lt;IPS>LANDING GEAR ASSY&lt;/IPS>
+      &lt;/IPH>
+      &lt;level1>
+         &lt;VAS segend="&amp;#10;">
+            &lt;CHG>N&lt;/CHG>
+            &lt;SID>
+               &lt;mfc>12345&lt;/mfc>
+               &lt;pnr>X1234999999999999&lt;/pnr>
+            &lt;/SID>
+            &lt;SNS>
+               &lt;nsc>1234&lt;/nsc>
+               &lt;nin>123456789&lt;/nin>
+            &lt;/SNS>
+         &lt;/VAS>
+         &lt;OHS segend="&amp;#10;">
+            &lt;OSN>A1234&lt;/OSN>
+            &lt;OBS>TESTING THIS&lt;/OBS>
+         &lt;/OHS>
+         &lt;cas-level1>
+            &lt;CAS segend="&amp;#10;">
+               &lt;CHG>B&lt;/CHG>
+               &lt;CSN>0123456789123&lt;/CSN>
+               &lt;ISN>ABC&lt;/ISN>
+               &lt;IND>9&lt;/IND>
+               &lt;RFS>0&lt;/RFS>
+               &lt;QNA>123&lt;/QNA>
+               &lt;TQL>ABCDE&lt;/TQL>
+               &lt;PNR>01234567890&lt;/PNR>
+               &lt;MFC>QWERT&lt;/MFC>
+               &lt;NSN>
+                  &lt;nsc>1234&lt;/nsc>
+                  &lt;nin>123456789&lt;/nin>
+               &lt;/NSN>
+            &lt;/CAS>
+            &lt;cas-level2>
+               &lt;CBS segend="&amp;#10;">
+                  &lt;ASP>1&lt;/ASP>
+                  &lt;NIL>Q&lt;/NIL>
+                  &lt;RTX>1234567890123456&lt;/RTX>
+                  &lt;SMF>X&lt;/SMF>
+                  &lt;MFM>THIS IS TEXT&lt;/MFM>
+                  &lt;DFL>THIS IS MORE TEXT&lt;/DFL>
+               &lt;/CBS>
+               &lt;CCS segend="&amp;#10;">
+                  &lt;UCE>ABCDEFGH&lt;/UCE>
+                  &lt;UCA>123456&lt;/UCA>
+                  &lt;ICY>AB&lt;/ICY>
+               &lt;/CCS>
+               &lt;CDS segend="&amp;#10;">
+                  &lt;CTL>1234567&lt;/CTL>
+                  &lt;ESC>9&lt;/ESC>
+                  &lt;MAP>12&lt;/MAP>
+                  &lt;CSR>321&lt;/CSR>
+               &lt;/CDS>
+               &lt;CES segend="&amp;#10;">
+                  &lt;CHG>A&lt;/CHG>
+                  &lt;SRV>ABC&lt;/SRV>
+                  &lt;SMR>654321&lt;/SMR>
+                  &lt;RMQ>12345&lt;/RMQ>
+                  &lt;ROQ>98765&lt;/ROQ>
+               &lt;/CES>
+               &lt;cas-level3>
+                  &lt;CJS segend="&amp;#10;">
+                     &lt;CHG>C&lt;/CHG>
+                     &lt;MOV>BA&lt;/MOV>
+                  &lt;/CJS>
+                  &lt;cas-level4>
+                     &lt;CKS segend="&amp;#10;">
+                        &lt;CHG>D&lt;/CHG>
+                        &lt;EFY>ABCDEFGH&lt;/EFY>
+                     &lt;/CKS>
+                  &lt;/cas-level4>
+               &lt;/cas-level3>
+               &lt;CFS segend="&amp;#10;">
+                  &lt;CHG>A&lt;/CHG>
+                  &lt;RFD>1234567&lt;/RFD>
+               &lt;/CFS>
+               &lt;CIS segend="&amp;#10;">
+                  &lt;CHG>B&lt;/CHG>
+                  &lt;ILS>09876543211234567890&lt;/ILS>
+               &lt;/CIS>
+            &lt;/cas-level2>
+         &lt;/cas-level1>
+         &lt;pas-level1>
+            &lt;PAS segend="&amp;#10;">
+               &lt;CHG>F&lt;/CHG>
+               &lt;PNR>123456789123456789123456789&lt;/PNR>
+               &lt;MFC>EDCBA&lt;/MFC>
+               &lt;DFP>THIS IS A DFP TEXT&lt;/DFP>
+               &lt;INC>12345&lt;/INC>
+               &lt;NSN>
+                  &lt;nsc>1234&lt;/nsc>
+                  &lt;nin>123456789&lt;/nin>
+               &lt;/NSN>
+               &lt;RNC>7&lt;/RNC>
+               &lt;RNV>5&lt;/RNV>
+               &lt;RNJ>3&lt;/RNJ>
+            &lt;/PAS>
+            &lt;pas-level2>
+               &lt;PBS segend="&amp;#10;">
+                  &lt;UOI>AB&lt;/UOI>
+                  &lt;SPQ>0123&lt;/SPQ>
+                  &lt;TOP>QW&lt;/TOP>
+                  &lt;ITY>ER&lt;/ITY>
+                  &lt;SPC>0&lt;/SPC>
+                  &lt;PLT>12&lt;/PLT>
+                  &lt;STR>9&lt;/STR>
+                  &lt;SLC>X&lt;/SLC>
+                  &lt;PLC>Y&lt;/PLC>
+                  &lt;PCD>W&lt;/PCD>
+               &lt;/PBS>
+               &lt;PCS segend="&amp;#10;">
+                  &lt;UOM>AB&lt;/UOM>
+                  &lt;QUI>1234&lt;/QUI>
+               &lt;/PCS>
+               &lt;PDS segend="&amp;#10;">
+                  &lt;UPR>123456789012&lt;/UPR>
+                  &lt;CUR>ABC&lt;/CUR>
+                  &lt;MSQ>54321&lt;/MSQ>
+                  &lt;PBD>
+                     &lt;qty>1&lt;/qty>
+                     &lt;qty>2&lt;/qty>
+                     &lt;upr>3000&lt;/upr>
+                     &lt;qty>4&lt;/qty>
+                     &lt;qty>5&lt;/qty>
+                     &lt;upr>11111111&lt;/upr>
+                  &lt;/PBD>
+               &lt;/PDS>
+               &lt;PES segend="&amp;#10;">
+                  &lt;CRT>123&lt;/CRT>
+                  &lt;SRA>21&lt;/SRA>
+                  &lt;MTI>
+                     &lt;tbf>123456&lt;/tbf>
+                     &lt;tcm>AB&lt;/tcm>
+                  &lt;/MTI>
+                  &lt;TBI>
+                     &lt;tbo>123456&lt;/tbo>
+                     &lt;tco>CD&lt;/tco>
+                  &lt;/TBI>
+                  &lt;TSI>
+                     &lt;tsv>654321&lt;/tsv>
+                     &lt;tcs>BD&lt;/tcs>
+                  &lt;/TSI>
+                  &lt;ALI>
+                     &lt;aul>987654&lt;/aul>
+                     &lt;tca>XY&lt;/tca>
+                  &lt;/ALI>
+                  &lt;TLF>123&lt;/TLF>
+               &lt;/PES>
+               &lt;PFS segend="&amp;#10;">
+                  &lt;DMC>ABC123&lt;/DMC>
+                  &lt;HAZ>ED12&lt;/HAZ>
+                  &lt;PIC>8&lt;/PIC>
+                  &lt;FTC>X&lt;/FTC>
+                  &lt;PSC>Q&lt;/PSC>
+                  &lt;ESD>0&lt;/ESD>
+                  &lt;CMK>9&lt;/CMK>
+               &lt;/PFS>
+               &lt;PGS segend="&amp;#10;">
+                  &lt;SUU>AB345678901234&lt;/SUU>
+                  &lt;SPU>CD345678901234&lt;/SPU>
+                  &lt;WUU>AB34567&lt;/WUU>
+                  &lt;WPU>CD34567&lt;/WPU>
+               &lt;/PGS>
+            &lt;/pas-level2>
+         &lt;/pas-level1>
+      &lt;/level1>
+      &lt;UNT segend="">
+         &lt;no-segments-0074>123456&lt;/no-segments-0074>
+         &lt;msg-no-0062>ABCD1234567812&lt;/msg-no-0062>
+      &lt;/UNT>
+   &lt;/level0>
+&lt;/CSNIPD></programlisting>
+            <section>
+                <title>Lengthy Productions</title>
+                <para>You'll notice in the above grammar that I've edited some of the productions to
+                    only contain <code>...</code> rather than the full model. The problem is that if
+                    I am to express a model such as 0 to 3 numeric characters, the iXML grammar
+                    rules will have me do this (here, <code>n</code> represents a production
+                    defining a single digit):</para>
+                <programlisting>n0-3 = (n? | n, n | n, n, n )</programlisting>
+                <para>A production defining a range between 0 and 130 numerical characters will be
+                    quite a bit longer<footnote>
+                        <para>The specification specifies a number of different ranges for some of
+                            the many data units.</para>
+                    </footnote>. Obviously, you can define a production using something like exactly
+                    10 characters and then repeat that production  where you need it:</para>
+                <programlisting>n10 = n, n, n, n, n, n, n, n, n, n</programlisting>
+                <para>The result will still be a fair number of lengthy productions.</para>
+            </section>
+            <section>
+                <title>Syntactic Sugar</title>
+                <para>You'll notice that some productions begin with a <code>-</code> sign:</para>
+                <programlisting>-an0-2 = (an? | an, an) .</programlisting>
+                <para>Others include a <code>-</code> sign before a literal string (<code>CHG</code>
+                    within quotes, right after the equal sign):</para>
+                <programlisting>CHG = -"CHG", comp-sep, alpha .</programlisting>
+                <para>This means that the XML serialisations should not output the production or
+                    literal as elements.</para>
+            </section>
+            <section>
+                <title>Data Types</title>
+                <para>Studying the S2000M 2.1 specification, it becomes obvious that memory is
+                    precious. If a data element only requires a single character, that is what you
+                    get. A textual data element might contain up to 130 characters, which is rather
+                    excessive for the specification; much more common is either a range up to no
+                    more than 6 or a fixed length of no more than what is absolutely
+                    necessary.</para>
+                <para>The allowed character sets are very limited, too, allowing only for digits,
+                    the upper-case English alphabet, spaces, question marks, and a few
+                    others:</para>
+                <programlisting>-alpha = [L] .
+-num = [N] .
+-other-level-a = [" !.,(;&amp;&lt;>%*=)"; #22] .
+-an = (alpha | num | other-level-a) .</programlisting>
+                <para>Here, <code>alpha</code> is more permissive than S2000 M; more correct is
+                    probably <code>[Lu]</code> (the Unicode character class for uppercase letters
+                    only).</para>
+                <para>Some characters in S2000M are restricted, as they represent control
+                    characters: apostrophes, plus signs, colons and question marks. Question marks
+                    are <quote>release characters</quote> (<quote>escape characters</quote> in
+                    today's parlance).</para>
+            </section>
         </section>
         <section>
             <title>So, Now That I've Got the XML...</title>
@@ -416,6 +926,46 @@ DEF = -"DEF", comp-sep, n3 .</programlisting>
             <para>Well, XML, unlike S2000M Issue 2.1, has a full ecosystem with editors,
                 transformation languages, etc. To start with, can we author messages using the XML
                 format?</para>
+            <section>
+                <title>Validation</title>
+                <para>The XML serialisation of a formal grammar is expressible as a schema. Or, in
+                    my case, a DTD. The dependencies between the various segments aren't, but
+                    Schematron rules will suffice more often than not. For example, there is a
+                    requirement in the spec that a message number given in the message header
+                        (<code>UNH</code>) is repeated in the message trailer (<code>UNT</code>).
+                    Looking at the grammar, above we find the <code>msg.no</code> production in
+                    both:</para>
+                <programlisting>UNH = -"UNH", sep, msg-no-0062, sep, message-identifier-S009, sep, segend .
+UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
+                <para>It is easy to check this. Here's the header:</para>
+                <programlisting>&lt;UNH segend="&amp;#10;">
+    &lt;msg-no-0062>123456&lt;/msg-no-0062>
+    ...
+&lt;/UNH></programlisting>
+                <para>And here's the trailer:</para>
+                <programlisting>&lt;UNT segend="">
+    ...
+    &lt;msg-no-0062>ABCD1234567812&lt;/msg-no-0062>
+&lt;/UNT></programlisting>
+                <para>It's quite easy to create a Schematron rule that checks if the two message
+                    identifiers (<code>msg-type-0062</code>) are the same. In this case, they are
+                    not, meaning that the test should fail.</para>
+                <para>But similarly, a Schematron check allows us to check the number of allowed
+                    characters. For example, rather than using an iXML grammar-provided (and
+                    lengthy) prodction declaring a model from 0 to 130 alphanumeric characters, we
+                    can do that check in a Schematron rule.</para>
+                <para>A combination of DTD validation and Schematron rules can express most, if not all<footnote>
+                        <para>This paper is written before the DTD and Schematron rules have been
+                            completed. While there are no negative results at this point, I can also
+                            not honestly declare the problems to be completely solved.</para>
+                    </footnote>, rules expressed either directly or indirectly in the S2000M
+                    specification.</para>
+            </section>
+            <section>
+                <title>Publishing</title>
+                <para>Messaging is a two-way communication. Well, actually, it is a multipoint
+                    communication.</para>
+            </section>
         </section>
     </section>
     <bibliography>
