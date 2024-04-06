@@ -135,30 +135,28 @@
             element can be a composite, containing two or more component data elements.</para>
         <section>
             <title>Segments</title>
-            <para>Segments have names. Those are called <quote>tags</quote>, a term that obviously
-                means something else today.</para>
-            <para>Here's a completely made-up segment example:</para>
+            <para>Segments names are called <quote>tags</quote>, a term that obviously means
+                something else today.</para>
+            <para>A segment looks like this:</para>
             <programlisting>SEG+ABC:123+DEF:456'</programlisting>
-            <para>This is the segment known as <code>SEG</code> (a <emphasis>tag</emphasis> name, if
-                you insist). It has two data units, <code>ABC</code> and <code>DEF</code>. You'll
-                notice that the segment tag and each data unit are separated using <code>+</code>
-                characters. The sharp-eyed reader will also note that the segment is ended using an
-                apostrophe (<code>'</code>).</para>
+            <para>This segment, <code>SEG</code> (a <emphasis>tag</emphasis> name, if you insist),
+                has two data units, <code>ABC</code> and <code>DEF</code>. The segment tag and each
+                data unit are separated using <code>+</code> characters. The segment is ended using
+                an apostrophe (<code>'</code>).</para>
         </section>
         <section>
             <title>Data Units</title>
-            <para>The data units are key-value pairs separated with colons (<code>:</code>). The
-                name, known as <emphasis>TEI</emphasis>, is before that colon while the value
-                    (<quote>data element</quote>) follows after.</para>
-            <para>You might have noticed that each segment <emphasis>tag</emphasis> and TEI are
-                identified using three upper-case letters. This is always the case; S2000M only ever
-                uses 3 upper-case letters for segment and TEI identification<footnote>
+            <para>Data units are key-value pairs separated with colons (<code>:</code>). The key,
+                known as <emphasis>TEI</emphasis>, is before that colon while the value (<quote>data
+                    element</quote>) follows after.</para>
+            <para>Each segment <emphasis>tag</emphasis> and TEI is always identified using three
+                upper-case letters. This is always the case; S2000M only ever uses 3 upper-case
+                letters for segment and TEI identification<footnote>
                     <para>Remember what I mentioned above, about saving that precious computing
                         power?</para>
                 </footnote>.</para>
-            <para>As I briefly mentioned, a data element may be a composite value, meaning that
-                several component values are associated with a single TEI. We have something like
-                this:</para>
+            <para>As mentioned, a data element may be a composite value, meaning that several
+                component values are associated with a single TEI:</para>
             <programlisting>ABC:12345:AB12:345</programlisting>
             <para>The TEI <code>ABC</code> has three components with values <quote>12345</quote>,
                     <quote>AB12</quote>, and <quote>345</quote>, respectively.</para>
