@@ -869,6 +869,17 @@ PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
       &lt;/UNT>
    &lt;/level0>
 &lt;/CSNIPD></programlisting>
+            <para>Notable in the XML are a few handy tweaks. For example, every segment — remember
+                the constructs starting with a segment name (<quote>tag</quote>) and ending with an
+                apostrophe? — has a <code>@segend</code> attribute, making it easy to differentiate
+                between segments and data units. A composite data unit's components are named and ,
+                exactly as declared in the specification, use lower-case letters. I've also added
+                nesting — only apparent in the spec if you look at the diagrams that are not part of
+                the syntax itself — and grouping based on the multiple <quote>levels</quote>
+                described by the spec.</para>
+            <para>All this becomes useful later, when publising the XML in S2000M format (see <xref
+                    xmlns:xlink="http://www.w3.org/1999/xlink" linkend="sect-input-output"
+                />).</para>
             <section>
                 <title>Lengthy Productions</title>
                 <para>You'll notice in the above grammar that I've edited some of the productions to
@@ -876,14 +887,14 @@ PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
                     I am to express a model such as 0 to 3 numeric characters, the iXML grammar
                     rules will have me do this (here, <code>n</code> represents a production
                     defining a single digit):</para>
-                <programlisting>n0-3 = (n? | n, n | n, n, n )</programlisting>
+                <programlisting>n0-3 = (n? | n, n | n, n, n ) .</programlisting>
                 <para>A production defining a range between 0 and 130 numerical characters will be
                     quite a bit longer<footnote>
                         <para>The specification specifies a number of different ranges for some of
                             the many data units.</para>
                     </footnote>. Obviously, you can define a production using something like exactly
                     10 characters and then repeat that production  where you need it:</para>
-                <programlisting>n10 = n, n, n, n, n, n, n, n, n, n</programlisting>
+                <programlisting>n10 = n, n, n, n, n, n, n, n, n, n .</programlisting>
                 <para>The result will still be a fair number of lengthy productions.</para>
             </section>
             <section>
@@ -961,11 +972,113 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     </footnote>, rules expressed either directly or indirectly in the S2000M
                     specification.</para>
             </section>
-            <section>
-                <title>Publishing</title>
-                <para>Messaging is a two-way communication. Well, actually, it is a multipoint
-                    communication.</para>
+            <section xml:id="sect-schemas-authoring">
+                <title>Schemas and Authoring</title>
+                <para>TBA - draft DTD (also: why a DTD rather than...?)</para>
+                <para>TBA - draft Schematron</para>
             </section>
+            <section>
+                <title>Context</title>
+                <para>The messages do not happen in a vacuum but rather as part of other engineering
+                    tasks. The product itself is commonly handled as a hierarchical tree known as a
+                        <quote>build of materials</quote> or BOM. In that tree, the root is the
+                    product, and the nodes are the parts and kits (groups of parts) that together
+                    form the product. So when you, say, add a part, the part is a node in that tree,
+                    and the various properties of that part — part number, quantity, etc — are
+                    attached to the node as <quote>attributes</quote><footnote>
+                        <para>Not necessarily in the XML sense of the word.</para>
+                    </footnote>, metadata about the part.</para>
+                <para>The node has an <quote>address</quote>, a location in the product. In the
+                    aerospace industry, there are standardised aproaches for those locations. The
+                    ATA 2200 specification, for example, places the various physical components of
+                    an aeroplane in numbered chapters where the numbers exactly match specific
+                    components. For example, 71 is power plant and 72 is engine. The chapters are
+                    then divided into sections and the sections into subjects, and addressing an
+                    assembly task might look like the example in <xref
+                        xmlns:xlink="http://www.w3.org/1999/xlink" linkend="assy-task"/></para>
+                <figure xml:id="assy-task">
+                    <title>ATA Number for a Task</title>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="img/Bal2024nord012803.gif"/>
+                        </imageobject>
+                    </mediaobject>
+                </figure>
+                <para>S1000D has a similar approach, as parts of that specification was derived from
+                    ATA. It, like S2000M, uses SNS (Standad Numbering System) to identify a
+                    component's system, subsystem, sub-subsystem, down to an assembly or
+                    unit.</para>
+                <para>This is the context in which the S2000M messaging happens, the idea being that
+                    the messages are directly <emphasis>about</emphasis> an assembly or unit, a node
+                    in the BOM<footnote>
+                        <para>I am but a humble pointy bracket professional, and there is much more
+                            to engineering and spare part BOMs, but this is where the S-series
+                            becomes powerful; the approach fits with that taken in
+                            engineering.</para>
+                    </footnote>.</para>
+                <para>This paper is not the place to discuss the larger picture, however.</para>
+            </section>
+            <section xml:id="sect-input-output">
+                <title>Input and Output</title>
+                <para>Messaging is a two-way communication. You author messages, and you read
+                    responses.</para>
+                <para>The incoming messages are S2000M text messages and need to be fed through the
+                    iXML processor to be serialised as XML. The XML can then be opened in an editor,
+                    of course, but it can also be be published in some suitable format using an XSLT
+                    conversion.</para>
+                <para>The outgoing messages are authored in XML format (see <xref
+                        xmlns:xlink="http://www.w3.org/1999/xlink" linkend="sect-schemas-authoring"
+                    />) but in order for the receiver to process them, the XML needs to be converted
+                    to an S2000M text message. This requires no more than a few lines of XSLT —
+                    which, of course, is expected. If we have a context-free iXML grammar for
+                    S2000M, it follows that the resulting XML is a lossless representation of the same<footnote>
+                        <para>An interesting exercise, outside the scope of this paper, is to prove
+                            this.</para>
+                    </footnote>, and it should therefore be possible to do a roundtrip.</para>
+            </section>
+            <section>
+                <title>Reviews</title>
+                <para>The lifecycle of an aerospace product means decades of updates, tweaks, and
+                    fixes, all of which need to be thoroughly reviewed before a new version of the
+                    product can fly. The data exchanges between manufacturers, partners, and others
+                    reflect the work involved in those changes and form a <quote>paper trail</quote>
+                    for later reviews.</para>
+                <para>The mainframe messages for those updates used to be converted to an Excel
+                    spreadsheet using a set of macros, but processing and storing the messages as
+                    XML does away with the macros — we can easily convert the XML to Excel
+                    spreadsheets, but also to any other suitable format for reviewing
+                    purposes.</para>
+            </section>
+        </section>
+    </section>
+    <section>
+        <title>In Conclusion</title>
+        <para>This, as already mentioned, is an ongoing project. As I write this, I have a
+            proof-of-concept solution with iXML grammars, a draft DTD and an accompanying
+            Schematron, plus XSLT stylesheets to output the XML in various formats. The authoring
+            environment is yet to follow, and there is much more work left to finalise the DTD and
+            Schematron.</para>
+        <para>The system that handles the BOMs is similarly a work in progress; it is being built
+            around and in Siemens Teamcenter, a large software kit handling engineering data in any
+            number of contexts and configurations.</para>
+        <section>
+            <title>Future State</title>
+            <para>The current project is very much about replacing a mainframe that is scheduled to
+                be decomissioned later this year. It does not attempt to replace or redesign any
+                downstream system that can continue to function if we replicate the necessary data
+                flows to and from the mainframe. What we are doing should be seen as a drop-in
+                replacement for the mainframe.</para>
+            <para>But that's an extremely inefficient way to move away from 60s technology, so there
+                is also a <quote>future state</quote>, one where the various old downstream systems
+                and text formats are replaced with IPD authoring directly in the system, using
+                state-of-the-art software and up-to-date S-series specifications. And so, yes, the
+                S2000M messaging iXML solution described in this paper will be replaced by Issue 7.x
+                and up-to-date XML Schemas.</para>
+            <para>The cool thing about this is that while moving to the latest issue is a big
+                project, replacing the iXML-based authoring with 7.x is not. The basic functionality
+                coupling the messages with the BOM will likely be reusable, even though some
+                metadata will certainly change.</para>
+            <para>What's really cool about </para>
         </section>
     </section>
     <bibliography>
