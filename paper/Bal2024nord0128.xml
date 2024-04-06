@@ -91,8 +91,8 @@
         <title>A 30-Year Old Text Format</title>
         <para>The S2000M 2.1 specification [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
                 linkend="s2000m-2.1-spec"/>] is 1739 pages. It's not exactly light bedtime reading,
-            but once you understand the general idea, namely to exchange parts data during the
-            lifecycle of a product, it is quite useful. Much of it describes formal requirements
+            but once you understand the general idea, namely to exchange parts information during
+            the lifecycle of a product, it is quite useful. Much of it describes formal requirements
             such as how to identify and locate a part, how to provision a new part, provide
             observations regarding the data from a contractor to a customer, and so on, but there is
             also a more interesting part that deals with the specifics of the text format describing
@@ -972,8 +972,23 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
             </section>
             <section xml:id="sect-schemas-authoring">
                 <title>Schemas and Authoring</title>
-                <para>TBA - draft DTD (also: why a DTD rather than...?)</para>
-                <para>TBA - draft Schematron</para>
+                <para>The serialised XML resulting from the grammar and the various S2000M message
+                    examples were used to generate a basic schema; in this case, a DTD. Why a DTD,
+                    you may ask. Well, to begin with, an editor that supports RelaxNG was not an
+                    option for the client, who will eventually use a tool called <emphasis>Rapid
+                        Author</emphasis> that integrates XMAX, the ActiveX version of XMetaL.
+                    XMetaL supports both DTDs and XML Schemas, but personally, I like the simplicity
+                    of DTDs. For anything beyond that, we need to use Schematron rules
+                    anyway.</para>
+                <para>The Schematron rules are mainly for checking data types (numeric, upper-case
+                    letters, some special characters, or a combination thereof; note that the
+                    character sets are actually very small) and the number of characters allowed for
+                    each S2000M data unit. There are also various conditions having to do with when
+                    some data units are allowed — they are conditional, with the conditions
+                    described in the spec itself. There are rules concerning how many times segments
+                    can be repeated, and there are sanity checks for the messages themselves, e.g.
+                    the message trailer repeats an identifier also found in the header, there is a
+                    segment count, and so on.</para>
             </section>
             <section>
                 <title>Context</title>
