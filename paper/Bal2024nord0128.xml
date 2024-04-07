@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="balisage-1-5.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <article xmlns="http://docbook.org/ns/docbook">
-    <title>Adventures in Mainframes and iXML</title>
+    <title>Adventures in Mainframes, Text-based Messaging, and iXML</title>
     <info>
         <abstract>
-            <para></para>
+            <para>When pointy brackets still meant SGML, an aerospace working group produced a
+                text-based messaging specification, S2000M Issue 2.1, intended in parts for hardware
+                up to twice its age. While the current version of that specification prescribes XML,
+                the old one, a mystifying mix of compact syntax and semantics, is not about to go
+                away anytime soon, even though the hardware is. Change in the aerospace industry is
+                often driven not by technological breakthroughs but necessity; in this case a trusty
+                old mainframe computer about to be decommissioned and there being no time to move to
+                the 21st century in an orderly fashion.</para>
+            <para>This, then, is the story of that old text-based format and the necessity of
+                keeping it around by introducing a more modern approach.</para>
         </abstract>
         <author>
             <personname>
