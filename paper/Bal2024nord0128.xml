@@ -55,12 +55,12 @@
             <title>S2000M</title>
             <para>The messaging specification, S2000M, <quote>defines the processes, procedures and
                     provides the information for data exchange to be used for material management
-                    throughout the lifecycle of a Product.</quote> Unlike S1000D, however, the first
-                released version, <emphasis>Issue 2.1</emphasis> more than 30 years ago, chose not
-                to use SGML and instead provided a text-based format. That format was kept very,
-                very compact to save on that precious computing power, because while the spec is
-                more than 30 years old today, the equipment it was meant to be used on could be
-                closer to 30 years old, back then.</para>
+                    throughout the lifecycle of a Product.</quote> Unlike S1000D, the first released
+                version, <emphasis>Issue 2.1</emphasis> more than 30 years ago, chose not to use
+                SGML and instead provided a text-based format. That format was kept very, very
+                compact to save on that precious computing power, because while the spec is more
+                than 30 years old today, the equipment it was meant to be used on could be closer to
+                30 years old back then.</para>
             <para>Of course, S2000M in its latest incarnation, <emphasis>Issue 7.0</emphasis>, is
                 XML, and it, too, is governed by a set of XML Schemas.</para>
         </section>
@@ -70,24 +70,24 @@
                 context in which all this happens may prove helpful and address some of the more
                 obvious questions you may have (such as <quote>why, oh why?</quote> or <quote>but
                     couldn't you just...?</quote>).</para>
-            <para>The products described and updated using the specifications we are discussing here
-                have lifespans of several decades. For example, a jet engine manufactured by a
-                client of the author first flew in the 60s and has been serviced, maintained, and
-                updated ever since. This means that the technical publications for it have had to
-                live for as long — and they need to continue living for several years after the last
-                of those engines has been retired.</para>
+            <para>The products described and updated using the S-series of specifications have
+                lifespans of several decades. For example, a jet engine manufactured by a client of
+                the author first flew in the 60s and has been serviced, maintained, and updated ever
+                since. The technical publications for it have had to live for as long — and need to
+                be available for several years after the last of those engines has been
+                retired.</para>
             <para>Obviously, the lifespans alone make a good case for markup, but it's
-                    <emphasis>complicated</emphasis>. The illustrated parts data (IPD) for that 60s
-                engine started out in a proprietary text-based format in a mainframe computer, and
-                while much of the documentation is now provided in SGML or XML formats, depending on
-                the receiver, that mainframe is still in use, even though the downstream processes
-                have been updated multiple times.</para>
-            <para>The point I'm trying to make is that the industry can be surprisingly
-                conservative, partly because that documentation really does need to live for that
-                long, and partly because if you want to keep the planes in the air, making sure the
-                spare parts information remains available is paramount. In other words, an old text
-                format producing IPD pages and another describing IPD messages can be very, very
-                resilient.</para>
+                    <emphasis>complicated</emphasis>. The <emphasis>Illustrated Parts Data
+                    (IPD)</emphasis> for that 60s engine started out in a proprietary text-based
+                format in a mainframe computer, and while much of the documentation is now provided
+                in SGML and XML formats, depending on the receiver, that mainframe is still in use
+                and outputs that text-based format, even though the downstream processes have been
+                updated multiple times.</para>
+            <para>The industry can be surprisingly conservative, partly because the documentation
+                really does need to live for that long, and partly because if you want to keep the
+                planes in the air, making sure the spare parts information remains available is
+                paramount. In other words, an old text format producing IPD pages and another
+                describing IPD messages can be very, very resilient.</para>
             <para>In fact, some companies may go about their business day in and day out, producing
                 new engine families, models, and variants, keeping the engines flying and in good
                 shape while knowing that yes, they should replace that mainframe. They really
@@ -99,14 +99,14 @@
     <section>
         <title>A 30-Year Old Text Format</title>
         <para>The S2000M 2.1 specification [<xref xmlns:xlink="http://www.w3.org/1999/xlink"
-                linkend="s2000m-2.1-spec"/>] is 1739 pages. It's not exactly light bedtime reading,
-            but once you understand the general idea, namely to exchange parts information during
-            the lifecycle of a product, it is quite useful. Much of it describes formal requirements
-            such as how to identify and locate a part, how to provision a new part, provide
-            observations regarding the data from a contractor to a customer, and so on, but there is
-            also a more interesting part that deals with the specifics of the text format describing
-            the messages themselves, including data dictionaries covering all aspects of the
-            format.</para>
+                linkend="s2000m-2.1-spec"/>] is 1739 pages. and hardly light bedtime reading, but
+            once you understand the general idea, namely to exchange parts information during the
+            lifecycle of a product, it is quite useful.</para>
+        <para>Much of it describes formal requirements such as how to identify and locate a part,
+            how to provision a new part, how to provide observations regarding the data from a
+            contractor to a customer, and so on, but a significant portion deals with the specifics
+            of the text format describing the messages themselves, including data dictionaries
+            covering all aspects of the format.</para>
         <para>There are several types of messages:</para>
         <itemizedlist>
             <listitem>
@@ -142,10 +142,15 @@
             basically a key-value construct with a name (<quote>TEI</quote> or <quote>Text Element
                 Identifier</quote>) and a value (<quote>data element</quote>). The value or data
             element can be a composite, containing two or more component data elements.</para>
+        <para>The spec also explains how to group those messages into larger transmissions, plus a
+            host of other subjects including how the Telex specification will work with S2000M, but
+            I leave those parts to the reader to find out about.</para>
         <section>
             <title>Segments</title>
             <para>Segments names are called <quote>tags</quote>, a term that obviously means
-                something else today.</para>
+                something else today<footnote>
+                    <para>And did back then; I don't think the working group cared.</para>
+                </footnote>.</para>
             <para>A segment looks like this:</para>
             <programlisting>SEG+ABC:123+DEF:456'</programlisting>
             <para>This segment, <code>SEG</code> (a <emphasis>tag</emphasis> name, if you insist),
@@ -158,38 +163,37 @@
             <para>Data units are key-value pairs separated with colons (<code>:</code>). The key,
                 known as <emphasis>TEI</emphasis>, is before that colon while the value (<quote>data
                     element</quote>) follows after.</para>
-            <para>Each segment <emphasis>tag</emphasis> and TEI is always identified using three
-                upper-case letters. This is always the case; S2000M only ever uses 3 upper-case
-                letters for segment and TEI identification<footnote>
+            <para>Each segment <emphasis>tag</emphasis> and TEI is always identified using
+                    <emphasis>three upper-case letters</emphasis>. This is always the case; S2000M
+                only ever uses 3 upper-case letters for segment and TEI identification<footnote>
                     <para>Remember what I mentioned above, about saving that precious computing
                         power?</para>
                 </footnote>.</para>
-            <para>As mentioned, a data element may be a composite value, meaning that several
-                component values are associated with a single TEI:</para>
+            <para>A data element may be a composite value, where several component values are
+                associated with a single TEI:</para>
             <programlisting>ABC:12345:AB12:345</programlisting>
             <para>The TEI <code>ABC</code> has three components with values <quote>12345</quote>,
                     <quote>AB12</quote>, and <quote>345</quote>, respectively.</para>
             <para>The specification lists a number of composite data elements, with each component
-                having a very specific meaning, so quite helpfully, the spec spells out each
-                component with a name, a lower-case TEI that is never repeated in the actual
-                message. For example, we might say that the data unit with the TEI <code>ABC</code>
-                is a composite with components <code>def</code> and <code>ghi</code>, but the actual
-                message would include the <code>ABC</code> data unit as <code>ANC:123:456</code>,
-                with <code>def</code> having the value <quote>123</quote> and <code>ghi</code>
-                having the value <quote>456</quote>. In the format, the context is everything; we
-                know that <code>ABC</code> contains two components, <code>def</code> and
+                having a very specific meaning. The spec spells out each component with a name, a
+                    <emphasis>lower-case</emphasis> TEI, never repeated in the message. For example,
+                we might say that the data unit with the TEI <code>ABC</code> is a composite with
+                components <code>def</code> and <code>ghi</code>, but the actual message would
+                include the <code>ABC</code> data unit as <code>ANC:123:456</code>, with
+                    <code>def</code> having the value <quote>123</quote> and <code>ghi</code> having
+                the value <quote>456</quote>. In the format, the context is everything; we know that
+                    <code>ABC</code> contains two components, <code>def</code> and
                     <emphasis>ghi</emphasis>; there is no ambiguity.</para>
             <para>The definitions of those basic character (sets) are similarly narrow. For example,
                 we only get upper-case letters, and beyond the numerical characters we only get a
-                handful of characters, such as equal signs, spaces, question marks, and the like.
-                It's a very narrow set of characters.</para>
+                handful of characters, such as equal signs, spaces, question marks, and the
+                like.</para>
         </section>
         <section>
             <title>Data Typing</title>
-            <para>This brings us neatly into the next S2000M feature, data typing.</para>
-            <para>Each data element — the value — is typed. This is meant to be usable in systems
-                conceived long before Bill Gates thought 512 k was all it took, after all. That
-                typing lists not only the character sets allowed<footnote>
+            <para>Each data element — the value — is typed and meant to be usable in systems
+                conceived long before Bill Gates thought 512 k was all it took. The typing lists not
+                only the character sets allowed<footnote>
                     <para>And I use the phrase liberally.</para>
                 </footnote> but also the number of characters allowed. The specification is full of
                 constructs like this:</para>
@@ -225,7 +229,7 @@
                 </mediaobject>
             </figure>
             <para>This is only half of the story; there is a second diagram detailing the CSNIPD
-                message.</para>
+                message in the spec.</para>
             <para>Here, the segments are three-letter codes all but <code>IPH</code> ending with
                     <quote>S</quote>, while the contained data units use the full data unit names
                 rather than the TEI three-letter abbreviations.</para>
@@ -233,8 +237,7 @@
         <section>
             <title>An Example</title>
             <para>I'm sure you're dying to see an actual message example. Here's a
-                    <emphasis>CSNIPD</emphasis> message fragment from the spec that I will leave
-                here mostly without comment:</para>
+                    <emphasis>CSNIPD</emphasis> message fragment from the spec:</para>
             <programlisting>UNH+...'
 IPH+IPP:F61170026+MTP:CSNIPD+ISS:D1+TOD:F6117+ADD:D1234+FID:
 S+MOI:1X+DRS:004+DRD:201088+LGE:UK+IPS:LANDING GEAR ASSY'
@@ -278,15 +281,15 @@ PDS+UPR:300+CUR:FRF'
 .
 .
 UNT+....'</programlisting>
-            <para>The headers and trailers are without consequence; the core is actually all about
+            <para>The headers and trailers are without consequence; the data is mostly in
                     <code>CAS</code> and <code>PAS</code> segments (and their subsegments<footnote>
                     <para>My term; these are segments that I consider to be within <code>CAS</code>
                         and <code>PAS</code>, respectively. There is a very clear grouping and
                         nesting of components within segments in the spec, but you can also argue
                         that there is overlap rather than hierarchy.</para>
-                </footnote>). The message, though, is a series of segments and there is nothing in
-                the format itself to suggest structure beyond flat segments. It's also far from a
-                complete example; more <code>CAS</code> and <code>PAS</code> segments are involved<footnote>
+                </footnote>). The message syntax itself is a series of flat segments and there is
+                nothing in the format itself to suggest more structure. The above is also far from
+                complete; more <code>CAS</code> and <code>PAS</code> segments are involved<footnote>
                     <para>The two segments depend on one another, which again is not something
                         apparent in the format itself.</para>
                 </footnote>.</para>
@@ -294,10 +297,10 @@ UNT+....'</programlisting>
     </section>
     <section>
         <title>Forcing a Change</title>
-        <para>Again, the industry is traditionally slow to change, having to keep all those planes
-            in the air while being subject to strict regulations. Frequently, change is forced
-            rather than planned, from software no longer being supported to, well, tearing down the
-            building in which a mainframe computer lives<footnote>
+        <para>The industry is traditionally slow to change, having to keep all those planes in the
+            air while being subject to strict regulations. Frequently, change is forced rather than
+            planned, from software no longer being supported to, well, tearing down the building in
+            which a mainframe computer lives<footnote>
                 <para>You could say that the building and the mainframe are a single unit; it's not
                     obvious which is built into which. The one joke the client is really tired of
                     hearing is <quote>So, how much do these things weigh? Maybe we could all pitch
@@ -307,31 +310,31 @@ UNT+....'</programlisting>
             has a few more months to live, and the migration into new systems and software
                 <emphasis>must</emphasis> be complete by then. There are any number of problems to
             solve, data to migrate, and processes to replace, and while the approach is to introduce
-            a drop-in replacement for the mainframe — the idea is to keep the inputs and outputs as
-            close to the current architecture as possible — the project is still an absolutely
-            massive undertaking.</para>
-        <para>Yours truly's role in the project is to make sure that it remains possible to store,
-            process, and send across illustrated parts data to every system that currently depends
-            on the mainframe once that mainframe is decommissioned<footnote>
+            a drop-in replacement for the mainframe — to keep the inputs and outputs as close to the
+            current architecture as possible — the project is still an absolutely massive
+            undertaking.</para>
+        <para>My role in the project is to make sure that it remains possible to store, process, and
+            send across illustrated parts data to every system that currently depends on the
+            mainframe once that mainframe is decommissioned<footnote>
                 <para>There are a number of other potential subjects for Balisage papers there.
                     Alas, there is no time.</para>
             </footnote>. Here, it must be noted that currently, the actual Illustrated Parts
-            Catalogues are all produced by either proprietary software converting the text-based
-            mainframe output to SGML or XML, or by third parties doing the same, again from the
-            text-based mainframe output.</para>
+            Catalogues are all produced by either proprietary software converting text-based
+            mainframe output to SGML or XML, or by third parties doing the same, again from various
+            text-based mainframe outputs.</para>
         <para>A critical process involves exchanging IPD messages between the client and their
             partners and customers. The data exchange system and processes were first introduced
             when the client became involved in a multinational aerospace project. The decision was
             made to use S2000M, and an implementation was developed for the mainframe system,
-            already 20+ years old by then.</para>
-        <para>Now, you might think that this would be a great opportunity to move to the latest
-            version of the specification,  Issue 7.0, and I would agree. In principle. However, the
-            many partners and customers currently do expect S2000M 2.1 and asking them to upgrade is
-            obviously not a viable option. </para>
+            already 20 years old by then.</para>
+        <para>You might think that this would be a great opportunity to move to the latest version
+            of the specification, Issue 7.0, and I would agree, in principle. However, the many
+            partners and customers currently do expect S2000M 2.1 and asking them to upgrade is
+            currently not a viable option. </para>
         <para>We could also move to 7.0 but convert to and from 2.1 for the back-and-forth exchange,
-            every time. This introduces several other problems, however, most importantly that the
-            spec is not backwards-compatible to that extent, and certainly not between the very
-            oldest and the very newest issues. It's not a viable option either.</para>
+            every time. This introduces several other problems, most importantly that the spec is
+            not backwards-compatible to that extent, and certainly not between the very oldest and
+            the very newest issues. Not a viable option either, then.</para>
         <section>
             <title>Sticking with Issue 2.1</title>
             <para>The mainframe S2000M implementation is lacking in several respects. There's not
@@ -339,14 +342,14 @@ UNT+....'</programlisting>
                 book time on it, and an entire day is blocked every week for various batch processes
                 that can't be done during night-time. Authoring and receiving messages is very much
                 a manual process, involving a series of cryptically named, tiny text-based
-                interfaces or <quote>screens</quote> where you type in equally cryptic commands or
-                read incoming messages by flipping through multiple screens. It's not what you might
-                call <quote>intuitive</quote>.</para>
+                    <quote>screens</quote> where you type in equally cryptic commands or read
+                incoming messages by flipping through multiple screens. It's not what you might call
+                an <quote>intuitive</quote> UI.</para>
             <para>As the S2000M messaging was implemented on top of an upgrade of an earlier system,
                 there are any number of legacy screens and internal logic that are not always fully
                 documented or even understood<footnote>
-                    <para>Many of the original engineers are no longer around, to put it
-                        mildly.</para>
+                    <para>Many of the original engineers are no longer able to provide
+                        assistance.</para>
                 </footnote>. Also, as another consequence of the implementation on top of an
                 upgrade, the S2000M segments and data units do not use S2000M naming; instead, they
                 use existing database field names.</para>
@@ -358,10 +361,10 @@ UNT+....'</programlisting>
                 as-is.</para>
             <para>But S2000M Issue 2.1 is not widely implemented. You can't buy an off-the-shelf
                 product, and there is no open-source library available on Github. If you need it,
-                you probably need to implement it yourself. At the same time, the client now accepts
-                that the old specifications do need to be upgraded, eventually. The intention is to
-                start using the entire S-series of specifications and start authoring directly in
-                XML in the new system that will eventually include a CSDB<footnote>
+                you need to implement it yourself. At the same time, the client now accepts that the
+                old specifications do need to be upgraded, eventually. The intention is to start
+                using the entire S-series of specifications and start authoring directly in XML in
+                the new system that will eventually include a CSDB<footnote>
                     <para>Common Source Database, an S1000D term for what is essentially a
                         specialised CMS and publishing platform for S1000D content.</para>
                 </footnote>. It makes sense, then, to plan for upgrading S2000M as well. Just not
@@ -438,14 +441,14 @@ PGS+SUU:AB345678901234+SPU:CD345678901234+WUU:AB34567+WPU:CD34567'
 UNT+123456+ABCD1234567812'</programlisting>
             <para>Much of this won't make sense to you, but we can spot the basic constructs, namely
                 segments —the rows starting with a three-letter alphabetic code followed by
-                    <code>+</code> and the row ended with a segment end character (<code>'</code>).
-                Within the segments, we can recognise data units, each separated with a plus
-                    (<code>+</code>) and starting with a TEI (Text Element Identifier) and followed
-                by one or more values, each separated with colons ('<code>:</code>). The
-                specification defines the allowed contents for each segment and their respective
-                data units (see <xref xmlns:xlink="http://www.w3.org/1999/xlink"
-                    linkend="csnipd-structure"/> for an overview), and so the remaining work is
-                simply about to express those contents in a formal grammar:</para>
+                    <code>+</code> and ending with a segment end character (<code>'</code>). Within
+                the segments, we can recognise data units, each separated with a plus
+                    (<code>+</code>) and starting with a TEI (Text Element Identifier) followed by
+                one or more values, each separated with colons ('<code>:</code>). The specification
+                defines the allowed contents for each segment and their respective data units (see
+                    <xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="csnipd-structure"/>
+                for an overview), and so the remaining work is simply about to express those
+                contents in a formal grammar:</para>
             <programlisting>{
 	This is an iXML grammar for S2000M CSNIPD messages.
 	S2000M spec 2.1: https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf
@@ -879,11 +882,13 @@ PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
             <para>Notable in the XML are a few handy tweaks. For example, every segment — remember
                 the constructs starting with a segment name (<quote>tag</quote>) and ending with an
                 apostrophe? — has a <code>@segend</code> attribute, making it easy to differentiate
-                between segments and data units. A composite data unit's components are named and ,
-                exactly as declared in the specification, use lower-case letters. I've also added
-                nesting — only apparent in the spec if you look at the diagrams that are not part of
-                the syntax itself — and grouping based on the multiple <quote>levels</quote>
-                described by the spec.</para>
+                between segments and data units<footnote>
+                    <para>No, the attribute value is of no interest whatsoever. The existence of the
+                        attribute iself is enough.</para>
+                </footnote>. A composite data unit's components are named and, just as declared in
+                the specification, use lower-case letters. I've also added nesting — only apparent
+                in the spec if you look at the diagrams that are not part of the syntax itself — and
+                grouping based on the multiple <quote>levels</quote> described by the spec.</para>
             <para>All this becomes useful later, when publising the XML in S2000M format (see <xref
                     xmlns:xlink="http://www.w3.org/1999/xlink" linkend="sect-input-output"
                 />).</para>
@@ -1075,11 +1080,10 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
     </section>
     <section>
         <title>In Conclusion</title>
-        <para>This, as already mentioned, is an ongoing project. As I write this, I have a
-            proof-of-concept solution with iXML grammars, a draft DTD and an accompanying
-            Schematron, plus XSLT stylesheets to output the XML in various formats. The authoring
-            environment is yet to follow, and there is much more work left to finalise the DTD and
-            Schematron.</para>
+        <para>This is very much an ongoing project. As I write this, I have a proof-of-concept
+            solution with iXML grammars, a draft DTD and an accompanying Schematron, plus XSLT
+            stylesheets to output the XML in various formats. The authoring environment is yet to
+            follow, and there is much more work left to finalise the DTD and Schematron.</para>
         <para>The system that handles the BOMs is similarly a work in progress; it is being built
             around and in Siemens Teamcenter, a large software kit handling engineering data in any
             number of contexts and configurations.</para>
@@ -1099,8 +1103,12 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
             <para>The cool thing about this is that while moving to the latest issue is a big
                 project, replacing the iXML-based authoring with 7.x is not. The basic functionality
                 coupling the messages with the BOM will likely be reusable, even though some
-                metadata will certainly change.</para>
-            <para>What's really cool about </para>
+                metadata will certainly change. If we replace an XML-based authoring approach with
+                another, we are not starting from scratch. It's all authored in an XML editor and
+                viewed and published using XML technologies, so much of that functionality and logic
+                can stay. It will have to be updated, yes, but we don't need to throw everything
+                away this time.</para>
+            <para>The XML is here to stay.</para>
         </section>
     </section>
     <bibliography>
