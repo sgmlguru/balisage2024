@@ -1003,6 +1003,10 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     can be repeated, and there are sanity checks for the messages themselves, e.g.
                     the message trailer repeats an identifier also found in the header, there is a
                     segment count, and so on.</para>
+                <section>
+                    <title>DTD Generation Notes</title>
+                    <para>TBA: minimum iXML examples, minimum XML examples (both unrealistic)</para>
+                </section>
             </section>
             <section>
                 <title>Context</title>
