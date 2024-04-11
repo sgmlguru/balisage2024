@@ -449,6 +449,8 @@ UNT+123456+ABCD1234567812'</programlisting>
                     <xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="csnipd-structure"/>
                 for an overview), and so the remaining work is simply about to express those
                 contents in a formal grammar:</para>
+            <para>TBA note minimum S2000M example requirements</para>
+            <para>TBA update grammar below</para>
             <programlisting>{
 	This is an iXML grammar for S2000M CSNIPD messages.
 	S2000M spec 2.1: https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf
@@ -683,6 +685,8 @@ PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
 
 </programlisting>
             <para>The XML serialisation is as follows:</para>
+            <para>TBA update serialisation</para>
+            <para>TBA add grouping notes</para>
             <programlisting>&lt;CSNIPD>
    &lt;level0>
       &lt;UNH segend="&amp;#10;">
@@ -1006,6 +1010,10 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                 <section>
                     <title>DTD Generation Notes</title>
                     <para>TBA: minimum iXML examples, minimum XML examples (both unrealistic)</para>
+                </section>
+                <section>
+                    <title>DTD Additional Modelling</title>
+                    <para>TBA: <code>#FIXED</code> attributes etc (non-syntax modelling)</para>
                 </section>
             </section>
             <section>
