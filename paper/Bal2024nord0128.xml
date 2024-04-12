@@ -1009,11 +1009,16 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     segment count, and so on.</para>
                 <section>
                     <title>DTD Generation Notes</title>
-                    <para>TBA: minimum iXML examples, minimum XML examples (both unrealistic)</para>
+                    <para>TBA: minimum iXML examples, minimum XML examples (both unrealistic),
+                        maximum XML examples</para>
+                    <para>TBA don't tweak DTD until the grammar is stable</para>
+                    <para>TBA anything not explicitly in the S2000M syntax but optional in grammar
+                        will inevitably cause ambiguity</para>
                 </section>
                 <section>
                     <title>DTD Additional Modelling</title>
-                    <para>TBA: <code>#FIXED</code> attributes etc (non-syntax modelling)</para>
+                    <para>TBA: <code>#FIXED</code> attributes etc (non-syntax modelling), groups
+                        from S2000M diagram, subsegments convenience wrappers</para>
                 </section>
             </section>
             <section>
