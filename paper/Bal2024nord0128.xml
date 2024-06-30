@@ -134,7 +134,7 @@
             </listitem>
             <listitem>
                 <para>Trailer — sanity check information (number of segments, basic
-                    identifier</para>
+                    identifier)</para>
             </listitem>
         </itemizedlist>
         <para>The data is kept in <emphasis>segments</emphasis> and <emphasis>data units</emphasis>.
@@ -418,10 +418,10 @@ DEF = -"DEF", comp-sep, n3 .</programlisting>
                     <emphasis>CSNIPD</emphasis> (<quote>used for the transmission of IP data which
                     has been compiled in accordance with the CSN-orientated IP procedure</quote>)
                 example:</para>
-            <programlisting>UNH+123456+CD3456:EF1:FD3:C1:ABC123+'
-IPH+IPP:F61170026+MTP:CSNIPD+ISS:D1+TOD:F6117+ADD:D1234+FID:S+MOI:1X+DRS:004+DRD:201088+LGE:UK+IPS:LANDING GEAR ASSY'
+            <programlisting>UNH+123456+CD3456:EF1:FD3:C1:ABC123+1234567890ABCDEFGHIJ012345678912345+12:C'
+IPH+IPP:F61170026+MTP:CSNIPD+ISS:D1+TOD:F6117+ADD:D1234+FID:S+MOI:1X+DRS:004+DRD:201088+LGE:UK+IPS:LANDING GEAR ASSY+DRR:AB123456'
 VAS+CHG:N+SID:12345:X1234999999999999+SNS:1234:123456789'
-OHS+OSN:A1234+OBS:TESTING THIS'
+OHS+OSN:1+OBS:TESTING THIS'
 CAS+CHG:B+CSN:0123456789123+ISN:ABC+IND:9+RFS:0+QNA:123+TQL:ABCDE+PNR:01234567890+MFC:QWERT+NSN:1234:123456789'
 CBS+ASP:1+NIL:Q+RTX:1234567890123456+SMF:X+MFM:THIS IS TEXT+DFL:THIS IS MORE TEXT'
 CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'
@@ -447,10 +447,22 @@ UNT+123456+ABCD1234567812'</programlisting>
                 one or more values, each separated with colons ('<code>:</code>). The specification
                 defines the allowed contents for each segment and their respective data units (see
                     <xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="csnipd-structure"/>
-                for an overview), and so the remaining work is simply about to express those
-                contents in a formal grammar:</para>
-            <para>TBA note minimum S2000M example requirements</para>
-            <para>TBA update grammar below</para>
+                for an overview), and so the remaining work is about expressing those contents in a
+                formal grammar.</para>
+            <!--TBA note minimum S2000M example requirements-->
+            <para>Many segments are optional, as are many of the contained data units.
+                    <emphasis>When</emphasis> they are optional depends on the type of information
+                being carried across by the messages, so some segments will only appear depending of
+                the item being described or if other segments are used.</para>
+            <para><xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="csnipd-structure"/> may
+                help illustrate this. The <code>CAS</code> segment provides mandatory
+                location-related information about the item, but the <quote>C</quote> segments
+                    <code>CBS</code>, <code>CCS</code>, <code>CDS</code> and <code>CFS</code> that
+                follow are only provided depending on the nature of the item. Those segments are
+                effectively <quote>subsegments</quote> to <code>CAS</code> and do not appear without
+                it. S2000M does not define such a concept, but adding it to the iXML grammar has
+                proved to be helpful.</para>
+            <!--TBA update grammar below-->
             <programlisting>{
 	This is an iXML grammar for S2000M CSNIPD messages.
 	S2000M spec 2.1: https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf
@@ -461,18 +473,17 @@ UNT+123456+ABCD1234567812'</programlisting>
 
 
 
-CSNIPD = level0 .
+CSNIPD = UNH, IPH, VAS+, OHS*, cas-group1+, pas-group2*, UNT .
 
-level0 = UNH, IPH, level1, UNT .
-level1 = VAS, OHS, cas-level1, pas-level1 .
+cas-group1 = CAS, cas-subsegments? .
+cas-subsegments = CBS?, CCS?, CDS?, ces-group3*, CFS?, CIS? .
+ces-group3 = CES, ces-subsegments? .
+ces-subsegments = cjs-group4* .
+cjs-group4 = CJS, cjs-subsegments? .
+cjs-subsegments = CKS* .
 
-cas-level1 = CAS, cas-level2 .
-cas-level2 = CBS, CCS, CDS, CES, cas-level3, CFS, CIS .
-cas-level3 = CJS, cas-level4 .
-cas-level4 = CKS .
-
-pas-level1 = PAS, pas-level2 .
-pas-level2 = PBS, PCS, PDS, PES, PFS, PGS .
+pas-group2 = PAS, pas-subsegments? .
+pas-subsegments = PBS?, PCS?, PDS?, PES?, PFS?, PGS? .
 
 
 @segend = -"'", (#9 | #a0 | #a | #d)* .
@@ -484,11 +495,20 @@ pas-level2 = PBS, PCS, PDS, PES, PFS, PGS .
 -other-level-a = [" !.,(;&amp;&lt;>%*=)"; #22] .
 -an = (alpha | num | other-level-a) .
 
--num0-6 = (num? | num, num | num, num, num | num, num, num, num | num, num, num, num, num | num, num, num, num, num, num) .
+-num0-2 = (num? | num, num) .
+-num0-6 = (...) .
 -an0-2 = (an? | an, an) .
 -an0-3 = (an? | an, an | an, an, an) .
--an0-6 = (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an) .
+-an0-5 = (...) .
+-an0-6 = (...) .
+-an0-7 = (...) .
+-an0-8 = (...) .
 -an0-14 = (...) .
+-an0-16 = (...) .
+-an0-19 = (...) .
+-an0-20 = (...) .
+-an0-32 = (...) .
+-an0-35 = (...) .
 
 no-segments-0074 = num0-6 .
 msg-no-0062 = an0-14 .
@@ -499,8 +519,13 @@ ctrl-agency-0051 = an0-2 .
 assoc-assign-code-0057 = an0-6 .
 
 message-identifier-S009 = msg-type-0065, comp-sep, msg-version-nbr-0052, comp-sep, msg-rel-nbr-0054, comp-sep, ctrl-agency-0051, comp-sep, assoc-assign-code-0057? .
+common-access-ref-0068 = an0-35 .
+sequence-transfers-0070 = num0-2 .
 
-UNH = -"UNH", sep, msg-no-0062, sep, message-identifier-S009, sep, segend .
+first-last-transfer-0073 = alpha . {C or F - should it be checked here?}
+transfer-status-S010 = sequence-transfers-0070, comp-sep, first-last-transfer-0073 .
+
+UNH = -"UNH", sep, msg-no-0062, sep, message-identifier-S009, sep, common-access-ref-0068, sep, transfer-status-S010, segend .
 UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .
 
 IPP = -"IPP", comp-sep, an, an, an, an, an, an, an, an, an .
@@ -513,34 +538,24 @@ MOI = -"MOI", comp-sep, an, an .
 DRS = -"DRS", comp-sep, num, num, num .
 DRD = -"DRD", comp-sep, num, num, num, num, num, num .
 LGE = -"LGE", comp-sep, alpha, alpha .
-IPS = -"IPS", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an | an, an, an, an, an, an, an | an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an | an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an, an) .
+IPS = -"IPS", comp-sep, an0-19 .
 DRR = "DRR", comp-sep, an, an, an, an, an, an, an, an .
 
-{
-	IPH groups based on essentiality
-}
--IPH-1 = IPP, sep, MTP, sep, ISS, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS .
--IPH-2 = IPP, sep, MTP, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS, sep, DRR? .
--IPH-3 = IPP, sep, MTP, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS .
--IPH-group = (IPH-1 | IPH-2 | IPH-3) .
-
-IPH = -"IPH", sep, IPH-group, segend .
+IPH = -"IPH", sep, IPP, sep, MTP, (sep, ISS)?, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS, (sep, DRR)?, segend .
 
 CHG = -"CHG", comp-sep, alpha .
 
 mfc = an, an, an, an, an .
--an0-32 = (...) .
 pnr = an0-32 .
 SID = -"SID", comp-sep, mfc, comp-sep, pnr .
 
 nsc = num, num, num, num .
 nin = num, num, num, num, num, num, num, num, num .
-SNS = -"SNS", comp-sep, nsc, comp-sep, nin .
+SNS = -"SNS", (comp-sep, nsc)?, (comp-sep, nin)? .
 
-VAS = -"VAS", sep, CHG, sep, SID, sep, SNS, segend .
+VAS = -"VAS", sep, CHG, sep, SID, (sep, SNS)?, segend .
 
--osn-model = (an? | an, an | an, an, an | an, an, an, an, an) .
-OSN = -"OSN", comp-sep, osn-model .
+OSN = -"OSN", comp-sep, num .
 OBS = -"OBS", comp-sep, an* . {This is 0-130 chars}
 
 OHS = -"OHS", sep, OSN, sep, OBS, segend .
@@ -550,50 +565,49 @@ ISN = -"ISN", comp-sep, an, an, an .
 IND = -"IND", comp-sep, num .
 RFS = -"RFS", comp-sep, num .
 QNA = -"QNA", comp-sep, (an? | an, an | an, an, an | an, an, an, an) .
-TQL = -"TQL", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an) .
+TQL = -"TQL", comp-sep, an0-5 .
 PNR = -"PNR", comp-sep, -pnr .
 MFC = -"MFC", comp-sep, -mfc .
-NSN = -"NSN", comp-sep, nsc, comp-sep, nin .
+NSN = -"NSN", comp-sep, nsc, (comp-sep, nin)? .
 
-CAS = -"CAS", sep, CHG, sep, CSN, sep, ISN, sep, IND, sep, RFS, sep, QNA, sep, TQL, sep, PNR, sep, MFC, sep, NSN, segend .
+CAS = -"CAS", sep, CHG, sep, CSN, sep, ISN, (sep, IND)?, (sep, RFS)?, (sep, QNA)?, (sep, TQL)?, (sep, PNR)?, (sep, MFC)?, (sep, NSN)?, segend .
 
 ASP = -"ASP", comp-sep, num .
 NIL = -"NIL", comp-sep, an .
-RTX = -"RTX", comp-sep, (...) .
+RTX = -"RTX", comp-sep, an0-16 .
 SMF = -"SMF", comp-sep, alpha .
 MFM = -"MFM", comp-sep, an* {0-40 alphanumeric chars} .
 DFL = -"DFL", comp-sep, an* {0-130 alphanumeric chars} .
 
-CBS = -"CBS", sep, ASP, sep, NIL, sep, RTX, sep, SMF, sep, MFM, sep, DFL, segend .
+CBS = -"CBS", (sep, ASP)?, (sep, NIL)?, (sep, RTX)?, (sep, SMF)?, (sep, MFM)?, (sep, DFL)?, segend .
 
 UCE = -"UCE", comp-sep, an, an, an, an, an, an, an, an .
 UCA = -"UCA", comp-sep, an, an, an, an, an, an .
 ICY = -"ICY", comp-sep, an, an .
 
-CCS = -"CCS", sep, UCE, sep, UCA, sep, ICY, segend .
+CCS = -"CCS", (sep, UCE)?, (sep, UCA)?, (sep, ICY)?, segend .
 
 CTL = -"CTL", comp-sep, an, an, an, an, an, an, an .
 ESC = -"ESC", comp-sep, num .
--num0-2 = (num? | num, num) .
 MAP = -"MAP", comp-sep, num0-2 .
 -num0-3 = (num? | num, num | num, num, num) .
 CSR = -"CSR", comp-sep, num0-3 .
 
-CDS = -"CDS", sep, CTL, sep, ESC, sep, MAP, sep, CSR, segend .
+CDS = -"CDS", (sep, CTL)?, (sep, ESC)?, (sep, MAP)?, (sep, CSR)?, segend .
 
 -num0-5 = (num? | num, num | num, num, num | num, num, num, num | num, num, num, num, num) .
 SRV = -"SRV", comp-sep, (an? | an, an | an, an, an) .
-SMR = -"SMR", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an, an) .
+SMR = -"SMR", comp-sep, an0-6 .
 RMQ = -"RMQ", comp-sep, num0-5 .
 ROQ = -"ROQ", comp-sep, num0-5 .
 
-CES = -"CES", sep, CHG, sep, SRV, sep, SMR, sep, RMQ, sep, ROQ, segend .
+CES = -"CES", sep, CHG, sep, SRV, (sep, SMR)?, (sep, RMQ)?, (sep, ROQ)?, segend .
 
-RFD = -"RFD", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an | an, an, an, an, an, an, an) .
+RFD = -"RFD", comp-sep, an0-7 .
 
 CFS = -"CFS", sep, CHG, sep, RFD, segend .
 
-ILS = -"ILS", comp-sep, (...) .
+ILS = -"ILS", comp-sep, an0-20 .
 
 CIS = -"CIS", sep, CHG, sep, ILS, segend .
 
@@ -601,7 +615,7 @@ MOV = -"MOV", comp-sep, (an? | an, an) .
 
 CJS = -"CJS", sep, CHG, sep, MOV, segend .
 
-EFY = -"EFY", comp-sep, (an? | an, an | an, an, an | an, an, an, an | an, an, an, an, an | an, an, an, an, an, an | an, an, an, an, an, an, an | an, an, an, an, an, an, an, an) .
+EFY = -"EFY", comp-sep, an0-8 .
 
 CKS = -"CKS", sep, CHG, sep, EFY, segend .
 
@@ -612,7 +626,7 @@ RNC = -"RNC", comp-sep, an .
 RNV = -"RNV", comp-sep, num .
 RNJ = -"RNJ", comp-sep, num .
 
-PAS = -"PAS", sep, CHG, sep, PNR, sep, MFC, sep, DFP, sep, INC, sep, NSN, sep, RNC, sep, RNV, sep, RNJ, segend .
+PAS = -"PAS", sep, CHG, sep, PNR, sep, MFC, (sep, DFP)?, (sep, INC)?, (sep, NSN)?, (sep, RNC)?, (sep, RNV)?, (sep, RNJ)?, segend .
 
 UOI = -"UOI", comp-sep, alpha, alpha .
 SPQ = -"SPQ", comp-sep, (num? | num, num | num, num, num | num, num, num, num) .
@@ -625,12 +639,12 @@ SLC = -"SLC", comp-sep, an .
 PLC = -"PLC", comp-sep, an .
 PCD = -"PCD", comp-sep, (an? | an, an) .
 
-PBS = -"PBS", sep, UOI, sep, SPQ, sep, TOP, sep, ITY, sep, SPC, sep, PLT, sep, STR, sep, SLC, sep, PLC, sep, PCD, segend .
+PBS = -"PBS", (sep, UOI)?, (sep, SPQ)?, (sep, TOP)?, (sep, ITY)?, (sep, SPC)?, (sep, PLT)?, (sep, STR)?, (sep, SLC)?, (sep, PLC)?, (sep, PCD)?, segend .
 
 UOM = -"UOM", comp-sep, an, an .
 QUI = -"QUI", comp-sep, (num? | num, num | num, num, num | num, num, num, num) .
 
-PCS = -"PCS", sep, UOM, sep, QUI, segend .
+PCS = -"PCS", (sep, UOM)?, (sep, QUI)?, segend .
 
 -num0-12 = (...) .
 UPR = -"UPR", comp-sep, num0-12 .
@@ -642,26 +656,26 @@ upr = num0-12 .
 
 PBD = -"PBD", comp-sep, qty, comp-sep, qty, comp-sep, upr, (comp-sep, qty, comp-sep, qty, comp-sep, upr)* {0-2 repetitions} .
 
-PDS = -"PDS", sep, UPR, sep, CUR, sep, MSQ, sep, PBD, segend .
+PDS = -"PDS", (sep, UPR)?, (sep, CUR)?, (sep, MSQ)?, (sep, PBD)?, segend .
 
 CRT = -"CRT", comp-sep, num0-3 .
 SRA = -"SRA", comp-sep, num0-2 .
 -alpha0-2 = (alpha? | alpha, alpha) .
 tbf = num0-6 .
 tcm = alpha0-2 .
-MTI = -"MTI", comp-sep, tbf, comp-sep, tcm .
+MTI = -"MTI", (comp-sep, tbf)?, (comp-sep, tcm)? .
 tbo = num0-6 .
 tco = alpha0-2 .
-TBI = -"TBI", comp-sep, tbo, comp-sep, tco .
+TBI = -"TBI", (comp-sep, tbo)?, (comp-sep, tco)? .
 tsv = num0-6 .
 tcs = alpha0-2 .
-TSI = -"TSI", comp-sep, tsv, comp-sep, tcs .
+TSI = -"TSI", (comp-sep, tsv)?, (comp-sep, tcs)? .
 aul = num0-6 .
 tca = alpha0-2 .
-ALI = -"ALI", comp-sep, aul, comp-sep, tca .
+ALI = -"ALI", (comp-sep, aul)?, (comp-sep, tca)? .
 TLF = -"TLF", comp-sep, num0-3 .
 
-PES = -"PES", sep, CRT, sep, SRA, sep, MTI, sep, TBI, sep, TSI, sep, ALI, sep, TLF, segend .
+PES = -"PES", (sep, CRT)?, (sep, SRA)?, (sep, MTI)?, (sep, TBI)?, (sep, TSI)?, (sep, ALI)?, (sep, TLF)?, segend .
 
 DMC = -"DMC", comp-sep, an0-6 .
 
@@ -672,7 +686,7 @@ PSC = -"PSC", comp-sep, an .
 ESD = -"ESD", comp-sep, num .
 CMK = -"CMK", comp-sep, num .
 
-PFS = -"PFS", sep, DMC, sep, HAZ, sep, PIC, sep, FTC, sep, PSC, sep, ESD, sep, CMK, segend .
+PFS = -"PFS", (sep, DMC)?, (sep, HAZ)?, (sep, PIC)?, (sep, FTC)?, (sep, PSC)?, (sep, ESD)?, (sep, CMK)?, segend .
 
 -an14 = an, an, an, an, an, an, an, an, an, an, an, an, an, an .
 SUU = -"SUU", comp-sep, an14 .
@@ -681,207 +695,212 @@ SPU = -"SPU", comp-sep, an14 .
 WUU = -"WUU", comp-sep, an7 .
 WPU = -"WPU", comp-sep, an7 .
 
-PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
-
+PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .
 </programlisting>
             <para>The XML serialisation is as follows:</para>
-            <para>TBA update serialisation</para>
-            <para>TBA add grouping notes</para>
+            <!--TBA update serialisation-->
+            <!--TBA add grouping notes-->
             <programlisting>&lt;CSNIPD>
-   &lt;level0>
-      &lt;UNH segend="&amp;#10;">
-         &lt;msg-no-0062>123456&lt;/msg-no-0062>
-         &lt;message-identifier-S009>
-            &lt;msg-type-0065>CD3456&lt;/msg-type-0065>
-            &lt;msg-version-nbr-0052>EF1&lt;/msg-version-nbr-0052>
-            &lt;msg-rel-nbr-0054>FD3&lt;/msg-rel-nbr-0054>
-            &lt;ctrl-agency-0051>C1&lt;/ctrl-agency-0051>
-            &lt;assoc-assign-code-0057>ABC123&lt;/assoc-assign-code-0057>
-         &lt;/message-identifier-S009>
-      &lt;/UNH>
-      &lt;IPH segend="&amp;#10;">
-         &lt;IPP>F61170026&lt;/IPP>
-         &lt;MTP>CSNIPD&lt;/MTP>
-         &lt;ISS>D1&lt;/ISS>
-         &lt;TOD>F6117&lt;/TOD>
-         &lt;ADD>D1234&lt;/ADD>
-         &lt;FID>S&lt;/FID>
-         &lt;MOI>1X&lt;/MOI>
-         &lt;DRS>004&lt;/DRS>
-         &lt;DRD>201088&lt;/DRD>
-         &lt;LGE>UK&lt;/LGE>
-         &lt;IPS>LANDING GEAR ASSY&lt;/IPS>
-      &lt;/IPH>
-      &lt;level1>
-         &lt;VAS segend="&amp;#10;">
-            &lt;CHG>N&lt;/CHG>
-            &lt;SID>
-               &lt;mfc>12345&lt;/mfc>
-               &lt;pnr>X1234999999999999&lt;/pnr>
-            &lt;/SID>
-            &lt;SNS>
-               &lt;nsc>1234&lt;/nsc>
-               &lt;nin>123456789&lt;/nin>
-            &lt;/SNS>
-         &lt;/VAS>
-         &lt;OHS segend="&amp;#10;">
-            &lt;OSN>A1234&lt;/OSN>
-            &lt;OBS>TESTING THIS&lt;/OBS>
-         &lt;/OHS>
-         &lt;cas-level1>
-            &lt;CAS segend="&amp;#10;">
-               &lt;CHG>B&lt;/CHG>
-               &lt;CSN>0123456789123&lt;/CSN>
-               &lt;ISN>ABC&lt;/ISN>
-               &lt;IND>9&lt;/IND>
-               &lt;RFS>0&lt;/RFS>
-               &lt;QNA>123&lt;/QNA>
-               &lt;TQL>ABCDE&lt;/TQL>
-               &lt;PNR>01234567890&lt;/PNR>
-               &lt;MFC>QWERT&lt;/MFC>
-               &lt;NSN>
-                  &lt;nsc>1234&lt;/nsc>
-                  &lt;nin>123456789&lt;/nin>
-               &lt;/NSN>
-            &lt;/CAS>
-            &lt;cas-level2>
-               &lt;CBS segend="&amp;#10;">
-                  &lt;ASP>1&lt;/ASP>
-                  &lt;NIL>Q&lt;/NIL>
-                  &lt;RTX>1234567890123456&lt;/RTX>
-                  &lt;SMF>X&lt;/SMF>
-                  &lt;MFM>THIS IS TEXT&lt;/MFM>
-                  &lt;DFL>THIS IS MORE TEXT&lt;/DFL>
-               &lt;/CBS>
-               &lt;CCS segend="&amp;#10;">
-                  &lt;UCE>ABCDEFGH&lt;/UCE>
-                  &lt;UCA>123456&lt;/UCA>
-                  &lt;ICY>AB&lt;/ICY>
-               &lt;/CCS>
-               &lt;CDS segend="&amp;#10;">
-                  &lt;CTL>1234567&lt;/CTL>
-                  &lt;ESC>9&lt;/ESC>
-                  &lt;MAP>12&lt;/MAP>
-                  &lt;CSR>321&lt;/CSR>
-               &lt;/CDS>
-               &lt;CES segend="&amp;#10;">
-                  &lt;CHG>A&lt;/CHG>
-                  &lt;SRV>ABC&lt;/SRV>
-                  &lt;SMR>654321&lt;/SMR>
-                  &lt;RMQ>12345&lt;/RMQ>
-                  &lt;ROQ>98765&lt;/ROQ>
-               &lt;/CES>
-               &lt;cas-level3>
+   &lt;UNH segend="&amp;#10;">
+      &lt;msg-no-0062>123456&lt;/msg-no-0062>
+      &lt;message-identifier-S009>
+         &lt;msg-type-0065>CD3456&lt;/msg-type-0065>
+         &lt;msg-version-nbr-0052>EF1&lt;/msg-version-nbr-0052>
+         &lt;msg-rel-nbr-0054>FD3&lt;/msg-rel-nbr-0054>
+         &lt;ctrl-agency-0051>C1&lt;/ctrl-agency-0051>
+         &lt;assoc-assign-code-0057>ABC123&lt;/assoc-assign-code-0057>
+      &lt;/message-identifier-S009>
+      &lt;common-access-ref-0068>1234567890ABCDEFGHIJ012345678912345&lt;/common-access-ref-0068>
+      &lt;transfer-status-S010>
+         &lt;sequence-transfers-0070>12&lt;/sequence-transfers-0070>
+         &lt;first-last-transfer-0073>C&lt;/first-last-transfer-0073>
+      &lt;/transfer-status-S010>
+   &lt;/UNH>
+   &lt;IPH segend="&amp;#10;">
+      &lt;IPP>F61170026&lt;/IPP>
+      &lt;MTP>CSNIPD&lt;/MTP>
+      &lt;ISS>D1&lt;/ISS>
+      &lt;TOD>F6117&lt;/TOD>
+      &lt;ADD>D1234&lt;/ADD>
+      &lt;FID>S&lt;/FID>
+      &lt;MOI>1X&lt;/MOI>
+      &lt;DRS>004&lt;/DRS>
+      &lt;DRD>201088&lt;/DRD>
+      &lt;LGE>UK&lt;/LGE>
+      &lt;IPS>LANDING GEAR ASSY&lt;/IPS>
+      &lt;DRR>DRRAB123456&lt;/DRR>
+   &lt;/IPH>
+   &lt;VAS segend="&amp;#10;">
+      &lt;CHG>N&lt;/CHG>
+      &lt;SID>
+         &lt;mfc>12345&lt;/mfc>
+         &lt;pnr>X1234999999999999&lt;/pnr>
+      &lt;/SID>
+      &lt;SNS>
+         &lt;nsc>1234&lt;/nsc>
+         &lt;nin>123456789&lt;/nin>
+      &lt;/SNS>
+   &lt;/VAS>
+   &lt;OHS segend="&amp;#10;">
+      &lt;OSN>1&lt;/OSN>
+      &lt;OBS>TESTING THIS&lt;/OBS>
+   &lt;/OHS>
+   &lt;cas-group1>
+      &lt;CAS segend="&amp;#10;">
+         &lt;CHG>B&lt;/CHG>
+         &lt;CSN>0123456789123&lt;/CSN>
+         &lt;ISN>ABC&lt;/ISN>
+         &lt;IND>9&lt;/IND>
+         &lt;RFS>0&lt;/RFS>
+         &lt;QNA>123&lt;/QNA>
+         &lt;TQL>ABCDE&lt;/TQL>
+         &lt;PNR>01234567890&lt;/PNR>
+         &lt;MFC>QWERT&lt;/MFC>
+         &lt;NSN>
+            &lt;nsc>1234&lt;/nsc>
+            &lt;nin>123456789&lt;/nin>
+         &lt;/NSN>
+      &lt;/CAS>
+      &lt;cas-subsegments>
+         &lt;CBS segend="&amp;#10;">
+            &lt;ASP>1&lt;/ASP>
+            &lt;NIL>Q&lt;/NIL>
+            &lt;RTX>1234567890123456&lt;/RTX>
+            &lt;SMF>X&lt;/SMF>
+            &lt;MFM>THIS IS TEXT&lt;/MFM>
+            &lt;DFL>THIS IS MORE TEXT&lt;/DFL>
+         &lt;/CBS>
+         &lt;CCS segend="&amp;#10;">
+            &lt;UCE>ABCDEFGH&lt;/UCE>
+            &lt;UCA>123456&lt;/UCA>
+            &lt;ICY>AB&lt;/ICY>
+         &lt;/CCS>
+         &lt;CDS segend="&amp;#10;">
+            &lt;CTL>1234567&lt;/CTL>
+            &lt;ESC>9&lt;/ESC>
+            &lt;MAP>12&lt;/MAP>
+            &lt;CSR>321&lt;/CSR>
+         &lt;/CDS>
+         &lt;ces-group3>
+            &lt;CES segend="&amp;#10;">
+               &lt;CHG>A&lt;/CHG>
+               &lt;SRV>ABC&lt;/SRV>
+               &lt;SMR>654321&lt;/SMR>
+               &lt;RMQ>12345&lt;/RMQ>
+               &lt;ROQ>98765&lt;/ROQ>
+            &lt;/CES>
+            &lt;ces-subsegments>
+               &lt;cjs-group4>
                   &lt;CJS segend="&amp;#10;">
                      &lt;CHG>C&lt;/CHG>
                      &lt;MOV>BA&lt;/MOV>
                   &lt;/CJS>
-                  &lt;cas-level4>
+                  &lt;cjs-subsegments>
                      &lt;CKS segend="&amp;#10;">
                         &lt;CHG>D&lt;/CHG>
                         &lt;EFY>ABCDEFGH&lt;/EFY>
                      &lt;/CKS>
-                  &lt;/cas-level4>
-               &lt;/cas-level3>
-               &lt;CFS segend="&amp;#10;">
-                  &lt;CHG>A&lt;/CHG>
-                  &lt;RFD>1234567&lt;/RFD>
-               &lt;/CFS>
-               &lt;CIS segend="&amp;#10;">
-                  &lt;CHG>B&lt;/CHG>
-                  &lt;ILS>09876543211234567890&lt;/ILS>
-               &lt;/CIS>
-            &lt;/cas-level2>
-         &lt;/cas-level1>
-         &lt;pas-level1>
-            &lt;PAS segend="&amp;#10;">
-               &lt;CHG>F&lt;/CHG>
-               &lt;PNR>123456789123456789123456789&lt;/PNR>
-               &lt;MFC>EDCBA&lt;/MFC>
-               &lt;DFP>THIS IS A DFP TEXT&lt;/DFP>
-               &lt;INC>12345&lt;/INC>
-               &lt;NSN>
-                  &lt;nsc>1234&lt;/nsc>
-                  &lt;nin>123456789&lt;/nin>
-               &lt;/NSN>
-               &lt;RNC>7&lt;/RNC>
-               &lt;RNV>5&lt;/RNV>
-               &lt;RNJ>3&lt;/RNJ>
-            &lt;/PAS>
-            &lt;pas-level2>
-               &lt;PBS segend="&amp;#10;">
-                  &lt;UOI>AB&lt;/UOI>
-                  &lt;SPQ>0123&lt;/SPQ>
-                  &lt;TOP>QW&lt;/TOP>
-                  &lt;ITY>ER&lt;/ITY>
-                  &lt;SPC>0&lt;/SPC>
-                  &lt;PLT>12&lt;/PLT>
-                  &lt;STR>9&lt;/STR>
-                  &lt;SLC>X&lt;/SLC>
-                  &lt;PLC>Y&lt;/PLC>
-                  &lt;PCD>W&lt;/PCD>
-               &lt;/PBS>
-               &lt;PCS segend="&amp;#10;">
-                  &lt;UOM>AB&lt;/UOM>
-                  &lt;QUI>1234&lt;/QUI>
-               &lt;/PCS>
-               &lt;PDS segend="&amp;#10;">
-                  &lt;UPR>123456789012&lt;/UPR>
-                  &lt;CUR>ABC&lt;/CUR>
-                  &lt;MSQ>54321&lt;/MSQ>
-                  &lt;PBD>
-                     &lt;qty>1&lt;/qty>
-                     &lt;qty>2&lt;/qty>
-                     &lt;upr>3000&lt;/upr>
-                     &lt;qty>4&lt;/qty>
-                     &lt;qty>5&lt;/qty>
-                     &lt;upr>11111111&lt;/upr>
-                  &lt;/PBD>
-               &lt;/PDS>
-               &lt;PES segend="&amp;#10;">
-                  &lt;CRT>123&lt;/CRT>
-                  &lt;SRA>21&lt;/SRA>
-                  &lt;MTI>
-                     &lt;tbf>123456&lt;/tbf>
-                     &lt;tcm>AB&lt;/tcm>
-                  &lt;/MTI>
-                  &lt;TBI>
-                     &lt;tbo>123456&lt;/tbo>
-                     &lt;tco>CD&lt;/tco>
-                  &lt;/TBI>
-                  &lt;TSI>
-                     &lt;tsv>654321&lt;/tsv>
-                     &lt;tcs>BD&lt;/tcs>
-                  &lt;/TSI>
-                  &lt;ALI>
-                     &lt;aul>987654&lt;/aul>
-                     &lt;tca>XY&lt;/tca>
-                  &lt;/ALI>
-                  &lt;TLF>123&lt;/TLF>
-               &lt;/PES>
-               &lt;PFS segend="&amp;#10;">
-                  &lt;DMC>ABC123&lt;/DMC>
-                  &lt;HAZ>ED12&lt;/HAZ>
-                  &lt;PIC>8&lt;/PIC>
-                  &lt;FTC>X&lt;/FTC>
-                  &lt;PSC>Q&lt;/PSC>
-                  &lt;ESD>0&lt;/ESD>
-                  &lt;CMK>9&lt;/CMK>
-               &lt;/PFS>
-               &lt;PGS segend="&amp;#10;">
-                  &lt;SUU>AB345678901234&lt;/SUU>
-                  &lt;SPU>CD345678901234&lt;/SPU>
-                  &lt;WUU>AB34567&lt;/WUU>
-                  &lt;WPU>CD34567&lt;/WPU>
-               &lt;/PGS>
-            &lt;/pas-level2>
-         &lt;/pas-level1>
-      &lt;/level1>
-      &lt;UNT segend="">
-         &lt;no-segments-0074>123456&lt;/no-segments-0074>
-         &lt;msg-no-0062>ABCD1234567812&lt;/msg-no-0062>
-      &lt;/UNT>
-   &lt;/level0>
+                  &lt;/cjs-subsegments>
+               &lt;/cjs-group4>
+            &lt;/ces-subsegments>
+         &lt;/ces-group3>
+         &lt;CFS segend="&amp;#10;">
+            &lt;CHG>A&lt;/CHG>
+            &lt;RFD>1234567&lt;/RFD>
+         &lt;/CFS>
+         &lt;CIS segend="&amp;#10;">
+            &lt;CHG>B&lt;/CHG>
+            &lt;ILS>09876543211234567890&lt;/ILS>
+         &lt;/CIS>
+      &lt;/cas-subsegments>
+   &lt;/cas-group1>
+   &lt;pas-group2>
+      &lt;PAS segend="&amp;#10;">
+         &lt;CHG>F&lt;/CHG>
+         &lt;PNR>123456789123456789123456789&lt;/PNR>
+         &lt;MFC>EDCBA&lt;/MFC>
+         &lt;DFP>THIS IS A DFP TEXT&lt;/DFP>
+         &lt;INC>12345&lt;/INC>
+         &lt;NSN>
+            &lt;nsc>1234&lt;/nsc>
+            &lt;nin>123456789&lt;/nin>
+         &lt;/NSN>
+         &lt;RNC>7&lt;/RNC>
+         &lt;RNV>5&lt;/RNV>
+         &lt;RNJ>3&lt;/RNJ>
+      &lt;/PAS>
+      &lt;pas-subsegments>
+         &lt;PBS segend="&amp;#10;">
+            &lt;UOI>AB&lt;/UOI>
+            &lt;SPQ>0123&lt;/SPQ>
+            &lt;TOP>QW&lt;/TOP>
+            &lt;ITY>ER&lt;/ITY>
+            &lt;SPC>0&lt;/SPC>
+            &lt;PLT>12&lt;/PLT>
+            &lt;STR>9&lt;/STR>
+            &lt;SLC>X&lt;/SLC>
+            &lt;PLC>Y&lt;/PLC>
+            &lt;PCD>W&lt;/PCD>
+         &lt;/PBS>
+         &lt;PCS segend="&amp;#10;">
+            &lt;UOM>AB&lt;/UOM>
+            &lt;QUI>1234&lt;/QUI>
+         &lt;/PCS>
+         &lt;PDS segend="&amp;#10;">
+            &lt;UPR>123456789012&lt;/UPR>
+            &lt;CUR>ABC&lt;/CUR>
+            &lt;MSQ>54321&lt;/MSQ>
+            &lt;PBD>
+               &lt;qty>1&lt;/qty>
+               &lt;qty>2&lt;/qty>
+               &lt;upr>3000&lt;/upr>
+               &lt;qty>4&lt;/qty>
+               &lt;qty>5&lt;/qty>
+               &lt;upr>11111111&lt;/upr>
+            &lt;/PBD>
+         &lt;/PDS>
+         &lt;PES segend="&amp;#10;">
+            &lt;CRT>123&lt;/CRT>
+            &lt;SRA>21&lt;/SRA>
+            &lt;MTI>
+               &lt;tbf>123456&lt;/tbf>
+               &lt;tcm>AB&lt;/tcm>
+            &lt;/MTI>
+            &lt;TBI>
+               &lt;tbo>123456&lt;/tbo>
+               &lt;tco>CD&lt;/tco>
+            &lt;/TBI>
+            &lt;TSI>
+               &lt;tsv>654321&lt;/tsv>
+               &lt;tcs>BD&lt;/tcs>
+            &lt;/TSI>
+            &lt;ALI>
+               &lt;aul>987654&lt;/aul>
+               &lt;tca>XY&lt;/tca>
+            &lt;/ALI>
+            &lt;TLF>123&lt;/TLF>
+         &lt;/PES>
+         &lt;PFS segend="&amp;#10;">
+            &lt;DMC>ABC123&lt;/DMC>
+            &lt;HAZ>ED12&lt;/HAZ>
+            &lt;PIC>8&lt;/PIC>
+            &lt;FTC>X&lt;/FTC>
+            &lt;PSC>Q&lt;/PSC>
+            &lt;ESD>0&lt;/ESD>
+            &lt;CMK>9&lt;/CMK>
+         &lt;/PFS>
+         &lt;PGS segend="&amp;#10;">
+            &lt;SUU>AB345678901234&lt;/SUU>
+            &lt;SPU>CD345678901234&lt;/SPU>
+            &lt;WUU>AB34567&lt;/WUU>
+            &lt;WPU>CD34567&lt;/WPU>
+         &lt;/PGS>
+      &lt;/pas-subsegments>
+   &lt;/pas-group2>
+   &lt;UNT segend="">
+      &lt;no-segments-0074>123456&lt;/no-segments-0074>
+      &lt;msg-no-0062>ABCD1234567812&lt;/msg-no-0062>
+   &lt;/UNT>
 &lt;/CSNIPD></programlisting>
             <para>Notable in the XML are a few handy tweaks. For example, every segment — remember
                 the constructs starting with a segment name (<quote>tag</quote>) and ending with an
@@ -890,9 +909,9 @@ PGS = -"PGS", sep, SUU, sep, SPU, sep, WUU, sep, WPU, segend .
                     <para>No, the attribute value is of no interest whatsoever. The existence of the
                         attribute iself is enough.</para>
                 </footnote>. A composite data unit's components are named and, just as declared in
-                the specification, use lower-case letters. I've also added nesting — only apparent
-                in the spec if you look at the diagrams that are not part of the syntax itself — and
-                grouping based on the multiple <quote>levels</quote> described by the spec.</para>
+                the specification, use lower-case letters. I've also added the notion of
+                subsegments,  and there is grouping based on the multiple <quote>groups</quote>
+                described by the spec.</para>
             <para>All this becomes useful later, when publising the XML in S2000M format (see <xref
                     xmlns:xlink="http://www.w3.org/1999/xlink" linkend="sect-input-output"
                 />).</para>
@@ -979,38 +998,39 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     not, meaning that the test should fail.</para>
                 <para>But similarly, a Schematron check allows us to check the number of allowed
                     characters. For example, rather than using an iXML grammar-provided (and
-                    lengthy) prodction declaring a model from 0 to 130 alphanumeric characters, we
+                    lengthy) production declaring a model from 0 to 130 alphanumeric characters, we
                     can do that check in a Schematron rule.</para>
                 <para>A combination of DTD validation and Schematron rules can express most, if not all<footnote>
-                        <para>This paper is written before the DTD and Schematron rules have been
-                            completed. While there are no negative results at this point, I can also
-                            not honestly declare the problems to be completely solved.</para>
+                        <para>For example, neither a DTD, nor a Schematron, can express the S2000M
+                            segment dependencies, such as the <code>CBS</code> segment only
+                            appearing depending on the nature of the item given location-related
+                            information in the preceding <code>CAS</code> segment. The grammar
+                            itself does not address the machanics of such dependencies, only that
+                            they exist.</para>
                     </footnote>, rules expressed either directly or indirectly in the S2000M
                     specification.</para>
             </section>
             <section xml:id="sect-schemas-authoring">
                 <title>Schemas and Authoring</title>
                 <para>The serialised XML resulting from the grammar and the various S2000M message
-                    examples were used to generate a basic schema; in this case, a DTD. Why a DTD,
-                    you may ask. Well, to begin with, an editor that supports RelaxNG was not an
-                    option for the client, who will eventually use a tool called <emphasis>Rapid
-                        Author</emphasis> that integrates XMAX, the ActiveX version of XMetaL.
-                    XMetaL supports both DTDs and XML Schemas, but personally, I like the simplicity
-                    of DTDs. For anything beyond that, we need to use Schematron rules
-                    anyway.</para>
+                    examples were used to generate a basic DTD. XML Schemas were considered, but I
+                    like the simplicity of DTDs, and for anything beyond basic modelling, we need to
+                    use Schematron rules anyway<footnote>
+                        <para>A case can be made for an XML-based schema, as an XML-based format is
+                            an easier target.</para>
+                    </footnote>.</para>
                 <para>The Schematron rules are mainly for checking data types (numeric, upper-case
                     letters, some special characters, or a combination thereof; note that the
                     character sets are actually very small) and the number of characters allowed for
-                    each S2000M data unit. There are also various conditions having to do with when
-                    some data units are allowed — they are conditional, with the conditions
-                    described in the spec itself. There are rules concerning how many times segments
-                    can be repeated, and there are sanity checks for the messages themselves, e.g.
-                    the message trailer repeats an identifier also found in the header, there is a
-                    segment count, and so on.</para>
+                    each S2000M data unit. Also, some conditions having to do with when some data
+                    units are allowed are described in the spec itself. There are rules concerning
+                    how many times segments can be repeated, and there are sanity checks for the
+                    messages themselves, e.g. the message trailer repeats an identifier also found
+                    in the header, there is a segment count, and so on.</para>
                 <section>
                     <title>DTD Generation Notes</title>
-                    <para>TBA: minimum iXML examples, minimum XML examples (both unrealistic),
-                        maximum XML examples</para>
+                    <!--TBA: minimum iXML examples, minimum XML examples (both unrealistic), maximum XML examples-->
+                    <para/>
                     <para>TBA don't tweak DTD until the grammar is stable</para>
                     <para>TBA anything not explicitly in the S2000M syntax but optional in grammar
                         will inevitably cause ambiguity</para>
@@ -1019,6 +1039,15 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     <title>DTD Additional Modelling</title>
                     <para>TBA: <code>#FIXED</code> attributes etc (non-syntax modelling), groups
                         from S2000M diagram, subsegments convenience wrappers</para>
+                </section>
+                <section>
+                    <title>Schematron Data Type Rules Generation</title>
+                    <para>The segment data types — such as 0 to 32 alphanumeric characters — are
+                        easier to express as Schematron rules, and it turned out that these could be
+                        generated in their entirety. The customer had an Excel spreadsheet with
+                        every segment and data unit listed alongside with the data types, so
+                        generating the rules was a matter of writing an XSLT to process the
+                        spreadsheet.</para>
                 </section>
             </section>
             <section>
