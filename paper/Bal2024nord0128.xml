@@ -411,7 +411,7 @@ DEF = -"DEF", comp-sep, n3 .</programlisting>
                     linkend="lumley-ixml-processor"/>] that allows you to test the above in the
                 browser.</para>
         </section>
-        <section>
+        <section xml:id="grammar-considerations">
             <title>S2000M Grammar Considerations</title>
             <para>It turns out that while expressing the S2000M message formats as iXML grammars is
                 a lot of work, it's perfectly doable. Here's a made-up S2000M
@@ -928,7 +928,7 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .
                         <para>The specification specifies a number of different ranges for some of
                             the many data units.</para>
                     </footnote>. Obviously, you can define a production using something like exactly
-                    10 characters and then repeat that production  where you need it:</para>
+                    10 characters and then repeat that production where you need it:</para>
                 <programlisting>n10 = n, n, n, n, n, n, n, n, n, n .</programlisting>
                 <para>The result will still be a fair number of lengthy productions.</para>
             </section>
@@ -1019,6 +1019,7 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                         <para>A case can be made for an XML-based schema, as an XML-based format is
                             an easier target.</para>
                     </footnote>.</para>
+                <!--TBA shorten the following para-->
                 <para>The Schematron rules are mainly for checking data types (numeric, upper-case
                     letters, some special characters, or a combination thereof; note that the
                     character sets are actually very small) and the number of characters allowed for
@@ -1028,17 +1029,48 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     messages themselves, e.g. the message trailer repeats an identifier also found
                     in the header, there is a segment count, and so on.</para>
                 <section>
-                    <title>DTD Generation Notes</title>
+                    <title>Generating the DTD</title>
                     <!--TBA: minimum iXML examples, minimum XML examples (both unrealistic), maximum XML examples-->
-                    <para/>
-                    <para>TBA don't tweak DTD until the grammar is stable</para>
-                    <para>TBA anything not explicitly in the S2000M syntax but optional in grammar
-                        will inevitably cause ambiguity</para>
+                    <para>Rather than writing the DTD by hand, I chose to generate it in oXygen XML
+                        Editor by feeding it with a number of examples serialised as XML from S2000M
+                        text messages, from the bare minimum to the maximum allowed. Most were not
+                        realistic — the various combinations wouldn't make sense to a methods
+                        engineer — but they did cover the many permutations allowed by the
+                        specification, resulting in a DTD that expresses it reasonably well.</para>
+                    <para>This works well if the S2000M iXML grammar only contains the actual
+                        segments and data units defined in the specification, in other words, if the
+                        S2000M message structure is expressible in a DTD. But is it, or rather, can
+                        we express the various implicit structures in the specification as explicit
+                        structures in a DTD? For example, I mention in <xref
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            linkend="grammar-considerations"/> that the various <quote>C</quote>
+                        segments — <code>CAS</code>, <code>CBS</code>, <code>CCS</code>, etc — imply
+                        a segments and subsegments hierarchy, something I chose to declare in my
+                        grammar.</para>
+                    <para>In practice, however, the explicit message syntax, as defined in the
+                        specification, is flat. No such hierarchy is apparent in a message using
+                        those segments:</para>
+                    <programlisting>CAS+CHG:B+...+NSN:1234:123456789'
+CBS+ASP:1+...+DFL:THIS IS MORE TEXT'
+CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
+                    <para>In other words, we can choose to model this as fa hierarchy because it is
+                        a useful and mostly correct interpretation:</para>
+                    <programlisting>CAS
+├── CBS
+└── CCS</programlisting>
+                    <para>TBA</para>
+                    <para>This causes a problem, because anything not explicitly in the S2000M
+                        syntax but present and optional in the grammar will cause ambiguity when an
+                        S2000 message is serialised in XML. You get more than one possible XML
+                        serialisation. </para>
+                    <!--TBA add ambiguity example-->
                 </section>
                 <section>
                     <title>DTD Additional Modelling</title>
                     <para>TBA: <code>#FIXED</code> attributes etc (non-syntax modelling), groups
                         from S2000M diagram, subsegments convenience wrappers</para>
+                    <para>I very quickly learned to not tweak the generated DTD until the grammar is
+                        stable</para>
                 </section>
                 <section>
                     <title>Schematron Data Type Rules Generation</title>
