@@ -8,18 +8,7 @@
 
 
 
-CSNIPD = UNH, IPH, VAS+, OHS*, cas-group1+, pas-group2*, UNT .
-
-cas-group1 = CAS, cas-subsegments? .
-cas-subsegments = CBS?, CCS?, CDS?, ces-group3*, CFS?, CIS? .
-ces-group3 = CES, ces-subsegments? .
-ces-subsegments = cjs-group4* .
-cjs-group4 = CJS, cjs-subsegments? .
-cjs-subsegments = CKS* .
-
-pas-group2 = PAS, pas-subsegments? .
-pas-subsegments = PBS?, PCS?, PDS?, PES?, PFS?, PGS? .
-
+CSNIPD = UNH, IPH, VAS+, OHS*, CAS+, PAS*, UNT .
 
 @segend = -"'", (#9 | #a0 | #a | #d)* .
 -sep = -"+" .
@@ -30,10 +19,27 @@ pas-subsegments = PBS?, PCS?, PDS?, PES?, PFS?, PGS? .
 -other-level-a = [" !.,(;&<>%*=)"; #22] .
 -an = (alpha | num | other-level-a) .
 
+-num4 = num, num, num, num .
+-num9 = num, num, num, num, num, num, num, num, num .
 -num0-2 = (num? | num, num) .
+-num0-3 = (...) .
+-num0-4 = (...) .
+-num0-5 = (...) .
 -num0-6 = (...) .
+-num0-12 = (...) .
+-an2 = an, an .
+-an3 = an, an, an .
+-an4 = (...) .
+-an5 = (...) .
+-an6 = (...) .
+-an7 = (...) .
+-an8 = (...) .
+-an9 = (...) .
+-an13 = (...) .
+-an14 = (...) .
 -an0-2 = (an? | an, an) .
--an0-3 = (an? | an, an | an, an, an) .
+-an0-3 = (...) .
+-an0-4 = (...) .
 -an0-5 = (...) .
 -an0-6 = (...) .
 -an0-7 = (...) .
@@ -63,29 +69,29 @@ transfer-status-S010 = sequence-transfers-0070, comp-sep, first-last-transfer-00
 UNH = -"UNH", sep, msg-no-0062, sep, message-identifier-S009, sep, common-access-ref-0068, sep, transfer-status-S010, segend .
 UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .
 
-IPP = -"IPP", comp-sep, an, an, an, an, an, an, an, an, an .
+IPP = -"IPP", comp-sep, an9 .
 MTP = -"MTP", comp-sep, an0-6 .
 ISS = -"ISS", comp-sep, an, an .
-TOD = -"TOD", comp-sep, an, an, an, an, an .
-ADD = -"ADD", comp-sep, an, an, an, an, an .
+TOD = -"TOD", comp-sep, an5 .
+ADD = -"ADD", comp-sep, an5 .
 FID = -"FID", comp-sep, alpha .
 MOI = -"MOI", comp-sep, an, an .
 DRS = -"DRS", comp-sep, num, num, num .
 DRD = -"DRD", comp-sep, num, num, num, num, num, num .
 LGE = -"LGE", comp-sep, alpha, alpha .
 IPS = -"IPS", comp-sep, an0-19 .
-DRR = "DRR", comp-sep, an, an, an, an, an, an, an, an .
+DRR = "DRR", comp-sep, an8 .
 
 IPH = -"IPH", sep, IPP, sep, MTP, (sep, ISS)?, sep, TOD, sep, ADD, sep, FID, sep, MOI, sep, DRS, sep, DRD, sep, LGE, sep, IPS, (sep, DRR)?, segend .
 
 CHG = -"CHG", comp-sep, alpha .
 
-mfc = an, an, an, an, an .
+mfc = an5 .
 pnr = an0-32 .
 SID = -"SID", comp-sep, mfc, comp-sep, pnr .
 
-nsc = num, num, num, num .
-nin = num, num, num, num, num, num, num, num, num .
+nsc = num4 .
+nin = num9 .
 SNS = -"SNS", (comp-sep, nsc)?, (comp-sep, nin)? .
 
 VAS = -"VAS", sep, CHG, sep, SID, (sep, SNS)?, segend .
@@ -95,17 +101,17 @@ OBS = -"OBS", comp-sep, an* . {This is 0-130 chars}
 
 OHS = -"OHS", sep, OSN, sep, OBS, segend .
 
-CSN = -"CSN", comp-sep, an, an, an, an, an, an, an, an, an, an, an, an, an .
-ISN = -"ISN", comp-sep, an, an, an .
+CSN = -"CSN", comp-sep, an13 .
+ISN = -"ISN", comp-sep, an3 .
 IND = -"IND", comp-sep, num .
 RFS = -"RFS", comp-sep, num .
-QNA = -"QNA", comp-sep, (an? | an, an | an, an, an | an, an, an, an) .
+QNA = -"QNA", comp-sep, an0-4 .
 TQL = -"TQL", comp-sep, an0-5 .
 PNR = -"PNR", comp-sep, -pnr .
 MFC = -"MFC", comp-sep, -mfc .
 NSN = -"NSN", comp-sep, nsc, (comp-sep, nin)? .
 
-CAS = -"CAS", sep, CHG, sep, CSN, sep, ISN, (sep, IND)?, (sep, RFS)?, (sep, QNA)?, (sep, TQL)?, (sep, PNR)?, (sep, MFC)?, (sep, NSN)?, segend .
+CAS = -"CAS", sep, CHG, sep, CSN, sep, ISN, (sep, IND)?, (sep, RFS)?, (sep, QNA)?, (sep, TQL)?, (sep, PNR)?, (sep, MFC)?, (sep, NSN)?, segend, (CBS?, CCS?, CDS?, CES, CFS?, CIS?)? .
 
 ASP = -"ASP", comp-sep, num .
 NIL = -"NIL", comp-sep, an .
@@ -116,27 +122,25 @@ DFL = -"DFL", comp-sep, an* {0-130 alphanumeric chars} .
 
 CBS = -"CBS", (sep, ASP)?, (sep, NIL)?, (sep, RTX)?, (sep, SMF)?, (sep, MFM)?, (sep, DFL)?, segend .
 
-UCE = -"UCE", comp-sep, an, an, an, an, an, an, an, an .
-UCA = -"UCA", comp-sep, an, an, an, an, an, an .
+UCE = -"UCE", comp-sep, an8 .
+UCA = -"UCA", comp-sep, an6 .
 ICY = -"ICY", comp-sep, an, an .
 
 CCS = -"CCS", (sep, UCE)?, (sep, UCA)?, (sep, ICY)?, segend .
 
-CTL = -"CTL", comp-sep, an, an, an, an, an, an, an .
+CTL = -"CTL", comp-sep, an7 .
 ESC = -"ESC", comp-sep, num .
 MAP = -"MAP", comp-sep, num0-2 .
--num0-3 = (num? | num, num | num, num, num) .
 CSR = -"CSR", comp-sep, num0-3 .
 
 CDS = -"CDS", (sep, CTL)?, (sep, ESC)?, (sep, MAP)?, (sep, CSR)?, segend .
 
--num0-5 = (num? | num, num | num, num, num | num, num, num, num | num, num, num, num, num) .
-SRV = -"SRV", comp-sep, (an? | an, an | an, an, an) .
+SRV = -"SRV", comp-sep, an0-3 .
 SMR = -"SMR", comp-sep, an0-6 .
 RMQ = -"RMQ", comp-sep, num0-5 .
 ROQ = -"ROQ", comp-sep, num0-5 .
 
-CES = -"CES", sep, CHG, sep, SRV, (sep, SMR)?, (sep, RMQ)?, (sep, ROQ)?, segend .
+CES = -"CES", sep, CHG, sep, SRV, (sep, SMR)?, (sep, RMQ)?, (sep, ROQ)?, segend, CJS* .
 
 RFD = -"RFD", comp-sep, an0-7 .
 
@@ -146,9 +150,9 @@ ILS = -"ILS", comp-sep, an0-20 .
 
 CIS = -"CIS", sep, CHG, sep, ILS, segend .
 
-MOV = -"MOV", comp-sep, (an? | an, an) .
+MOV = -"MOV", comp-sep, an0-2 .
 
-CJS = -"CJS", sep, CHG, sep, MOV, segend .
+CJS = -"CJS", sep, CHG, sep, MOV, segend, CKS* .
 
 EFY = -"EFY", comp-sep, an0-8 .
 
@@ -156,32 +160,31 @@ CKS = -"CKS", sep, CHG, sep, EFY, segend .
 
 
 DFP = -"DFP", comp-sep, an* {0-130 alphanumeric} .
-INC = -"INC", comp-sep, an, an, an, an, an .
+INC = -"INC", comp-sep, an5 .
 RNC = -"RNC", comp-sep, an .
 RNV = -"RNV", comp-sep, num .
 RNJ = -"RNJ", comp-sep, num .
 
-PAS = -"PAS", sep, CHG, sep, PNR, sep, MFC, (sep, DFP)?, (sep, INC)?, (sep, NSN)?, (sep, RNC)?, (sep, RNV)?, (sep, RNJ)?, segend .
+PAS = -"PAS", sep, CHG, sep, PNR, sep, MFC, (sep, DFP)?, (sep, INC)?, (sep, NSN)?, (sep, RNC)?, (sep, RNV)?, (sep, RNJ)?, segend, (PBS?, PCS?, PDS?, PES?, PFS?, PGS?)? .
 
 UOI = -"UOI", comp-sep, alpha, alpha .
-SPQ = -"SPQ", comp-sep, (num? | num, num | num, num, num | num, num, num, num) .
-TOP = -"TOP", comp-sep, an, an .
-ITY = -"ITY", comp-sep, an, an .
+SPQ = -"SPQ", comp-sep, num0-4 .
+TOP = -"TOP", comp-sep, an2 .
+ITY = -"ITY", comp-sep, an2 .
 SPC = -"SPC", comp-sep, num .
 PLT = -"PLT", comp-sep, num0-2 .
 STR = -"STR", comp-sep, num .
 SLC = -"SLC", comp-sep, an .
 PLC = -"PLC", comp-sep, an .
-PCD = -"PCD", comp-sep, (an? | an, an) .
+PCD = -"PCD", comp-sep, an0-2 .
 
 PBS = -"PBS", (sep, UOI)?, (sep, SPQ)?, (sep, TOP)?, (sep, ITY)?, (sep, SPC)?, (sep, PLT)?, (sep, STR)?, (sep, SLC)?, (sep, PLC)?, (sep, PCD)?, segend .
 
-UOM = -"UOM", comp-sep, an, an .
-QUI = -"QUI", comp-sep, (num? | num, num | num, num, num | num, num, num, num) .
+UOM = -"UOM", comp-sep, an2 .
+QUI = -"QUI", comp-sep, num0-4 .
 
 PCS = -"PCS", (sep, UOM)?, (sep, QUI)?, segend .
 
--num0-12 = (...) .
 UPR = -"UPR", comp-sep, num0-12 .
 CUR = -"CUR", comp-sep, alpha, alpha, alpha .
 MSQ = -"MSQ", comp-sep, num0-5 .
@@ -214,7 +217,7 @@ PES = -"PES", (sep, CRT)?, (sep, SRA)?, (sep, MTI)?, (sep, TBI)?, (sep, TSI)?, (
 
 DMC = -"DMC", comp-sep, an0-6 .
 
-HAZ = -"HAZ", comp-sep, an, an, an, an .
+HAZ = -"HAZ", comp-sep, an4 .
 PIC = -"PIC", comp-sep, num .
 FTC = -"FTC", comp-sep, an .
 PSC = -"PSC", comp-sep, an .
@@ -223,10 +226,8 @@ CMK = -"CMK", comp-sep, num .
 
 PFS = -"PFS", (sep, DMC)?, (sep, HAZ)?, (sep, PIC)?, (sep, FTC)?, (sep, PSC)?, (sep, ESD)?, (sep, CMK)?, segend .
 
--an14 = an, an, an, an, an, an, an, an, an, an, an, an, an, an .
 SUU = -"SUU", comp-sep, an14 .
 SPU = -"SPU", comp-sep, an14 .
--an7 = an, an, an, an, an, an, an .
 WUU = -"WUU", comp-sep, an7 .
 WPU = -"WPU", comp-sep, an7 .
 
