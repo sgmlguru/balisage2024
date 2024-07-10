@@ -361,14 +361,18 @@ UNT+....'</programlisting>
                 systems that translate between the mainframe S2000M flavour and the
                     <quote>proper</quote> S2000M format. We should be able to handle S2000M
                 as-is.</para>
-            <para>But S2000M Issue 2.1 is not widely implemented. You can't buy an off-the-shelf
-                product, and there is no open-source library available on Github. If you need it,
-                you need to implement it yourself. At the same time, the client now accepts that the
-                old specifications do need to be upgraded, eventually. The intention is to start
-                using the entire S-series of specifications and start authoring directly in XML in
-                the new system that will eventually include a CSDB<footnote>
+            <para>But S2000M Issue 2.1 is not widely implemented. If you need it, you need to
+                implement it yourself<footnote>
+                    <para>Some off-the-shelf solutions do exist but they all bring with them other
+                        problems.</para>
+                </footnote>. At the same time, the client now accepts that the old specifications do
+                need to be upgraded, eventually. The intention is to start using the entire S-series
+                of specifications and start authoring directly in XML in the new system that will
+                eventually include a CSDB<footnote>
                     <para>Common Source Database, an S1000D term for what is essentially a
-                        specialised CMS and publishing platform for S1000D content.</para>
+                        specialised CMS and publishing platform for S1000D content. Implementing the
+                        full S-series requires a single, common repository for all of the
+                        data.</para>
                 </footnote>. It makes sense, then, to plan for upgrading S2000M as well. Just not
                 now.</para>
             <para>But do we actually want to implement a 30-year old text-based specification,
@@ -889,7 +893,7 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</prog
                 apostrophe? — has a <code>@segend</code> attribute, making it easy to differentiate
                 between segments and data units<footnote>
                     <para>No, the attribute value is of no interest whatsoever. The existence of the
-                        attribute iself is enough.</para>
+                        attribute itself is enough.</para>
                 </footnote>. A composite data unit's components are named and, just as declared in
                 the specification, use lower-case letters.</para>
             <note>
@@ -898,7 +902,7 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</prog
                     described by the specification, but I've since removed them, based on end user
                     input.</para>
             </note>
-            <para>All this becomes useful later, when publising the XML in S2000M format (see <xref
+            <para>All this becomes useful later, when publishing the XML in S2000M format (see <xref
                     xmlns:xlink="http://www.w3.org/1999/xlink" linkend="sect-input-output"
                 />).</para>
             <section>
@@ -989,7 +993,7 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                             segment dependencies, such as the <code>CBS</code> segment only
                             appearing depending on the nature of the item given location-related
                             information in the preceding <code>CAS</code> segment. The grammar
-                            itself does not address the machanics of such dependencies, only that
+                            itself does not address the mechanics of such dependencies, only that
                             they exist.</para>
                     </footnote>, rules expressed either directly or indirectly in the S2000M
                     specification.</para>
@@ -1032,10 +1036,10 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                         />) add numbered <emphasis>levels</emphasis> to the segment hierarchy. These
                         are not in the message syntax; you need to read the spec to know about them.
                         They add dependencies to the segment hierarchy, and a higher level must
-                        always always relate to data contained in the next lower level. For example,
-                        level 1 segments must always relate to level 0 segments.</para>
-                    <para>As such, they provide essential information about the segment and
-                        subsegment relations, information we can use to fully validate a message.
+                        always relate to data contained in the next lower level. For example, level
+                        1 segments must always relate to level 0 segments.</para>
+                    <para>As such, they provide essential information about the segment and child
+                        segment relations, information we can use to fully validate a message.
                         Directly adding them to the grammar causes an overlap problem, however; for
                         example, both <code>CAS</code> and <code>PAS</code> child segments are level
                         2 segments, but they have different parents.</para>
@@ -1055,7 +1059,7 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                             linkend="fig-csnipd-segments"/>). These are used to what the allowed
                         number of occurrences the segments in a group is, but also how those groups
                         would appear in the explicit syntax.</para>
-                    <para>Unlike levels, I've elected not to express these in the XML, at leat not
+                    <para>Unlike levels, I've elected not to express these in the XML, at least not
                         yet, because while the text format in the spec does need them to make the
                         occurrences obvious to the user, the XML serialisation does not. The XML
                         serialisation hierarchies should be enough.</para>
@@ -1103,7 +1107,7 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                         <para>Not necessarily in the XML sense of the word.</para>
                     </footnote>, metadata about the part.</para>
                 <para>The node has an <quote>address</quote>, a location in the product. In the
-                    aerospace industry, there are standardised aproaches for those locations. The
+                    aerospace industry, there are standardised approaches for those locations. The
                     ATA 2200 specification, for example, places the various physical components of
                     an aeroplane in numbered chapters where the numbers exactly match specific
                     components. For example, 71 is power plant and 72 is engine. The chapters are
@@ -1119,7 +1123,7 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                     </mediaobject>
                 </figure>
                 <para>S1000D has a similar approach, as parts of that specification was derived from
-                    ATA. It, like S2000M, uses SNS (Standad Numbering System) to identify a
+                    ATA. It, like S2000M, uses SNS (Standard Numbering System) to identify a
                     component's system, subsystem, sub-subsystem, down to an assembly or
                     unit.</para>
                 <para>This is the context in which the S2000M messaging happens, the idea being that
@@ -1139,7 +1143,7 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                     responses.</para>
                 <para>The incoming messages are S2000M text messages and need to be fed through the
                     iXML processor to be serialised as XML. The XML can then be opened in an editor,
-                    of course, but it can also be be published in some suitable format using an XSLT
+                    of course, but it can also be published in some suitable format using an XSLT
                     conversion.</para>
                 <para>The outgoing messages are authored in XML format (see <xref
                         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -1150,7 +1154,7 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                     is a lossless representation of the same<footnote>
                         <para>An interesting exercise, outside the scope of this paper, is to prove
                             this.</para>
-                    </footnote>, and it should therefore be possible to do a roundtrip.</para>
+                    </footnote>, and it should therefore be possible to do a round trip.</para>
             </section>
             <section>
                 <title>Reviews</title>
@@ -1180,7 +1184,7 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
         <section>
             <title>Future State</title>
             <para>The current project is very much about replacing a mainframe that is scheduled to
-                be decomissioned later this year. It does not attempt to replace or redesign any
+                be decommissioned later this year. It does not attempt to replace or redesign any
                 downstream system that can continue to function if we replicate the necessary data
                 flows to and from the mainframe. What we are doing should be seen as a drop-in
                 replacement for the mainframe.</para>
