@@ -451,7 +451,6 @@ UNT+123456+ABCD1234567812'</programlisting>
                     <xref xmlns:xlink="http://www.w3.org/1999/xlink" linkend="csnipd-structure"/>
                 for an overview), and so the remaining work is about expressing those contents in a
                 formal grammar.</para>
-            <!--TBA note minimum S2000M example requirements-->
             <para>Many segments are optional, as are many of the contained data units.
                     <emphasis>When</emphasis> they are optional depends on the type of information
                 being carried across by the messages, so some segments will only appear depending of
@@ -464,7 +463,6 @@ UNT+123456+ABCD1234567812'</programlisting>
                 effectively child segments to <code>CAS</code> and do not appear without it. S2000M
                 does not define such a concept, but it is helpful to think of them in that
                 way.</para>
-            <!--TBA update grammar below-->
             <programlisting>{
 	This is an iXML grammar for S2000M CSNIPD messages.
 	S2000M spec 2.1: https://www.s2000m.org/S2000M/S2000M%20Issue%202.1%20CP1-4.pdf
@@ -700,9 +698,7 @@ WPU = -"WPU", comp-sep, an7 .
 
 PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</programlisting>
             <para>The XML serialisation is as follows:</para>
-            <!--TBA update serialisation-->
-            <!--TBA add grouping notes-->
-            <programlisting>&lt;&lt;CSNIPD>
+            <programlisting>&lt;CSNIPD>
    &lt;UNH segend="&amp;#10;">
       &lt;msg-no-0062>123456&lt;/msg-no-0062>
       &lt;message-identifier-S009>
@@ -988,16 +984,6 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                 <para>All we have to do is to create a Schematron rule that checks if the two
                     message identifiers (<code>msg-type-0062</code>) are the same. In this case,
                     they are not, meaning that the test should fail.</para>
-                <para>The Schematron rules are useful for checking data types (numeric, upper-case
-                    letters, some special characters, or a combination thereof; note that the
-                    character sets are actually very small), of course, as well as the number of
-                    characters allowed for each S2000M data unit; rather than using an iXML
-                    grammar-provided (and lengthy) production declaring a model from 0 to 130
-                    alphanumeric characters, we can do that check in a Schematron rule.</para>
-                <para>There are rules concerning how many times segments can be repeated, there are
-                    various conditions on when some data units may appear, and there are sanity
-                    checks for the messages themselves, e.g. the message trailer repeats an
-                    identifier also found in the header, there is a segment count, and so on.</para>
                 <para>A combination of DTD validation and Schematron rules can express many, if not all<footnote>
                         <para>For example, neither a DTD, nor a Schematron, can express some S2000M
                             segment dependencies, such as the <code>CBS</code> segment only
@@ -1009,31 +995,23 @@ UNT = -"UNT", sep, no-segments-0074, sep, msg-no-0062, segend .</programlisting>
                     specification.</para>
                 <section>
                     <title>Generating the DTD</title>
-                    <!--TBA: minimum iXML examples, minimum XML examples (both unrealistic), maximum XML examples-->
                     <para>Rather than writing the DTD by hand, I chose to generate it in oXygen XML
                         Editor by feeding it with a number of examples serialised as XML from S2000M
                         text messages, from the bare minimum to the maximum allowed. Most were not
                         realistic — the various combinations wouldn't make sense to an IP engineer —
-                        but they did cover the many permutations allowed by the specification,
-                        resulting in a DTD that expresses it reasonably well.</para>
-                    <para>This works best if the S2000M iXML grammar only contains the actual
-                        segments and data units defined in the specification, in other words, if the
-                        S2000M message structure is expressible in a DTD. But is it, or rather, can
-                        we express the various implicit structures in the specification as explicit
-                        structures in a DTD? For example, I mention in <xref
+                        but they did cover the many permutations allowed by the specification. Of
+                        course, this works only if the S2000M message structure is actually
+                        expressible in a DTD.</para>
+                    <para>But is it? For example, I mention in <xref
                             xmlns:xlink="http://www.w3.org/1999/xlink"
                             linkend="grammar-considerations"/> that the various <quote>C</quote>
                         segments — <code>CAS</code>, <code>CBS</code>, <code>CCS</code>, etc — imply
-                        a segments and child segments hierarchy, something I chose to declare in my
-                        grammar.</para>
-                    <para>In practice, however, the explicit message syntax, as defined in the
-                        specification, is flat. No such hierarchy is apparent in a message using
-                        those segments:</para>
+                        a segments and child segments hierarchy, even though the message syntax is
+                        flat. You'll have to read the spec to know that:</para>
                     <programlisting>CAS+CHG:B+...+NSN:1234:123456789'
 CBS+ASP:1+...+DFL:THIS IS MORE TEXT'
 CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
-                    <para>In other words, we can choose to model this as a hierarchy because it is a
-                        useful and mostly correct interpretation:</para>
+                    <para>The spec implies this:</para>
                     <programlisting>CAS
 ├── CBS
 └── CCS</programlisting>
@@ -1041,34 +1019,77 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                     <programlisting>&lt;!ELEMENT CAS (%cas.content;, CBS?, CCS?)</programlisting>
                     <para>In the grammar, the equivalent is this:</para>
                     <programlisting>CAS = -"CAS", ... , segend, (CBS?, CCS?) .</programlisting>
-                    <para>Here, I'm skipping most of the <code>CAS</code> segment content; see <xref
+                    <para>This skips most of the <code>CAS</code> segment content; see <xref
                             xmlns:xlink="http://www.w3.org/1999/xlink"
-                            linkend="grammar-considerations"/> for the full example. The
-                            <code>segend</code> is very useful for separating the segment from the
-                        child segments that follow.</para>
-                    <!--TBA add ambiguity example-->
+                            linkend="grammar-considerations"/> for the full example. Importantly,
+                        the <code>segend</code> marks the end of the current hierarchy level;
+                        everything following is a child segment.</para>
                 </section>
                 <section>
                     <title>DTD Additional Modelling</title>
-                    <para>TBA: <code>#FIXED</code> attributes etc (non-syntax modelling), groups
-                        from S2000M diagram, subsegments convenience wrappers</para>
-                    <para>I very quickly learned to not tweak the generated DTD until the grammar is
-                        stable</para>
+                    <para>The spec illustrations (see <xref
+                            xmlns:xlink="http://www.w3.org/1999/xlink" linkend="fig-csnipd-segments"
+                        />) add numbered <emphasis>levels</emphasis> to the segment hierarchy. These
+                        are not in the message syntax; you need to read the spec to know about them.
+                        They add dependencies to the segment hierarchy, and a higher level must
+                        always always relate to data contained in the next lower level. For example,
+                        level 1 segments must always relate to level 0 segments.</para>
+                    <para>As such, they provide essential information about the segment and
+                        subsegment relations, information we can use to fully validate a message.
+                        Directly adding them to the grammar causes an overlap problem, however; for
+                        example, both <code>CAS</code> and <code>PAS</code> child segments are level
+                        2 segments, but they have different parents.</para>
+                    <para>As I believe there is no way to add a production to the grammar to
+                        represent an XML attribute with different values depending on the segment, I
+                        settled with adding the level information as <code>#FIXED</code> attributes
+                        to the DTD after generation<footnote>
+                            <para>And very quickly learned to not tweak the generated DTD until the
+                                grammar is stable.</para>
+                        </footnote>:</para>
+                    <programlisting>&lt;!ELEMENT CBS (ASP?,NIL?,RTX?,SMF?,MFM?,DFL?)>
+&lt;!ATTLIST CBS
+  level CDATA #FIXED "2"
+  segend CDATA #REQUIRED></programlisting>
+                    <para>Another S2000M implied construct is the <emphasis>groups</emphasis> (see
+                            <xref xmlns:xlink="http://www.w3.org/1999/xlink"
+                            linkend="fig-csnipd-segments"/>). These are used to what the allowed
+                        number of occurrences the segments in a group is, but also how those groups
+                        would appear in the explicit syntax.</para>
+                    <para>Unlike levels, I've elected not to express these in the XML, at leat not
+                        yet, because while the text format in the spec does need them to make the
+                        occurrences obvious to the user, the XML serialisation does not. The XML
+                        serialisation hierarchies should be enough.</para>
                 </section>
                 <section>
-                    <title>Schematron Data Type Rules Generation</title>
-                    <para>The segment data types — such as 0 to 32 alphanumeric characters — are
-                        easier to express as Schematron rules, and it turned out that these could be
-                        generated in their entirety. The customer had an Excel spreadsheet with
-                        every segment and data unit listed alongside with the data types, so
-                        generating the rules was a matter of writing an XSLT to process the
-                        spreadsheet.</para>
+                    <title>Schematron Notes</title>
+                    <para>The Schematron rules are useful for checking data types (numeric,
+                        upper-case letters, some special characters, or a combination thereof; note
+                        that the character sets are actually very small), of course, as well as the
+                        number of characters allowed for each S2000M data unit; rather than using an
+                        iXML grammar-provided (and lengthy) production declaring a model from 0 to
+                        130 alphanumeric characters, we can do that check in a Schematron rule<footnote>
+                            <para>It turned out that these could be generated in their entirety. The
+                                customer had an Excel spreadsheet with every segment and data unit
+                                listed alongside with the data types, so generating the rules was a
+                                matter of writing an XSLT to process the spreadsheet.</para>
+                        </footnote>.</para>
+                    <para>There are rules concerning how many times segments can be repeated, there
+                        are various conditions on when some data units may appear, and there are
+                        sanity checks for the messages themselves, e.g. the message trailer repeats
+                        an identifier also found in the header, there is a segment count, and so
+                        on.</para>
                 </section>
             </section>
-            <!--<section xml:id="sect-schemas-authoring"><title>Schemas and Authoring</title><para>The serialised XML resulting from the grammar and the various S2000M message examples were used to generate a basic DTD. XML Schemas were considered, but I like the simplicity of DTDs, and for anything beyond basic modelling, we need to use Schematron rules anyway<footnote><para>A case can be made for an XML-based schema, as an XML-based format is an easier target.</para></footnote>.</para><!-\-TBA shorten the following para-\-></section>-->
-            <section>
+            <section xml:id="authoring-considerations">
                 <title>Authoring Considerations</title>
-                <para>TBA XML editor - oXygen? form?</para>
+                <para>The idea of authoring S2000M 2.1 messages as XML was presented with a proof of
+                    concept where I implemented a tiny authoring environment in oXygen XML Editor. A
+                    generated DTD, Schematron rules, and some CSS was enough.</para>
+                <para>But this was a bit like taking an 18-wheeler for shopping groceries a quiet
+                    Thursday night. It works, but it's unnecessarily complicated and there is really
+                    no need. There are very few free text fields, and most of the data is either
+                    from predefined controlled lists or retrievable from engineering
+                    databases.</para>
             </section>
             <section>
                 <title>Context</title>
@@ -1108,7 +1129,8 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                             to engineering and spare part BOMs, but this is where the S-series
                             becomes powerful; the approach fits with that taken in
                             engineering.</para>
-                    </footnote>.</para>
+                    </footnote>. Thus, much of the information is either in the BOM itself or it
+                    should be attached to a node in the BOM as metadata.</para>
                 <para>This paper is not the place to discuss the larger picture, however.</para>
             </section>
             <section xml:id="sect-input-output">
@@ -1119,11 +1141,13 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                     iXML processor to be serialised as XML. The XML can then be opened in an editor,
                     of course, but it can also be be published in some suitable format using an XSLT
                     conversion.</para>
-                <para>The outgoing messages are authored in XML format (see TBA AUTHORING SECT) but
-                    in order for the receiver to process them, the XML needs to be converted to an
-                    S2000M text message. This requires no more than a few lines of XSLT — which, of
-                    course, is expected. If we have a context-free iXML grammar for S2000M, it
-                    follows that the resulting XML is a lossless representation of the same<footnote>
+                <para>The outgoing messages are authored in XML format (see <xref
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        linkend="authoring-considerations"/>) but in order for the receiver to
+                    process them, the XML needs to be converted to an S2000M text message. This
+                    requires no more than a few lines of XSLT — which, of course, is expected. If we
+                    have a context-free iXML grammar for S2000M, it follows that the resulting XML
+                    is a lossless representation of the same<footnote>
                         <para>An interesting exercise, outside the scope of this paper, is to prove
                             this.</para>
                     </footnote>, and it should therefore be possible to do a roundtrip.</para>
@@ -1146,13 +1170,13 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
     <section>
         <title>In Conclusion</title>
         <para>This is very much an ongoing project. As I write this, I have a proof-of-concept
-            solution with iXML grammars, a draft DTD and an accompanying Schematron, plus XSLT
-            stylesheets to output the XML in various formats. The authoring environment is yet to
-            follow, and there is much more work left to finalise the DTD and Schematron.</para>
+            solution with iXML grammars, draft DTDs and accompanying Schematron rules, plus XSLT
+            stylesheets to output the XML in various formats. The form-based authoring environment
+            is yet to follow, and there is much more work left to finalise the DTDs and the
+            Schematron rules.</para>
         <para>The system that handles the BOMs is similarly a work in progress; it is being built
             around and in Siemens Teamcenter, a large software kit handling engineering data in any
             number of contexts and configurations.</para>
-        <para>TBA late developments</para>
         <section>
             <title>Future State</title>
             <para>The current project is very much about replacing a mainframe that is scheduled to
@@ -1170,10 +1194,10 @@ CCS+UCE:ABCDEFGH+UCA:123456+ICY:AB'</programlisting>
                 project, replacing the iXML-based authoring with 7.x is not. The basic functionality
                 coupling the messages with the BOM will likely be reusable, even though some
                 metadata will certainly change. If we replace an XML-based authoring approach with
-                another, we are not starting from scratch. It's all authored in an XML editor and
-                viewed and published using XML technologies, so much of that functionality and logic
-                can stay. It will have to be updated, yes, but we don't need to throw everything
-                away this time.</para>
+                another, we are not starting from scratch. It's all authored, viewed, and published
+                using XML technologies, so much of that functionality and logic can stay. It will
+                have to be updated, yes, but we don't need to throw everything away this
+                time.</para>
             <para>The XML is here to stay.</para>
         </section>
     </section>
