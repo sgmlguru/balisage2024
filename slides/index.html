@@ -135,9 +135,127 @@
 				
 				
 				<!-- S2000M format -->
-				<section>
-					<section data-background="img/screenshot-s2000m-page.png" data-background-size="100%" data-background-opacity="0.20">
+				<section data-background="img/screenshot-s2000m-page.png" data-background-size="100%" data-background-opacity="0.07">
+					<section>
 						<h3>A 30-Year Old Text Format...</h3>
+					</section>
+					
+					<section>
+						<h3>S2000M</h3>
+						<ul>
+							<li>First usable - used - version was 2.1 in 1992</li>
+							<li>The work started a decade earlier</li>
+						</ul>
+						
+						<!-- Add messaging image -->
+					</section>
+					
+					<section>
+						<h3>Types of Messages</h3>
+						<ul>
+							<li>Provisioning data</li>
+							<li>Observations and customer-provided data</li>
+							<li>Codification requests from a contractor</li>
+							<li>Codification data to the contractor</li>
+						</ul>
+						
+						<p class="fragment">All in all, 8 distinct types (plus one for error messages)</p>
+					</section>
+					
+					<section>
+						<h3>Structure</h3>
+						
+						<img src="img/message-structure.png" alt="General message structure (screenshot from spec)" style="width: 60%"/>
+						
+						<aside class="notes">
+							<p>Left to right</p>
+							<p>Headers and trailers</p>
+							<p>Segments and child segments</p>
+							<p>Segments are lists of key/value pairs</p>
+						</aside>
+					</section>
+					
+					<section>
+						<h3>Segments</h3>
+						
+						<!--<pre class="txt" style="font-size: 18pt; text-align: center;">
+							<code data-trim data-noescape></code>
+						</pre>-->
+						
+						<div class="r-stack">
+							<p class="fade-out"><span class="fragment highlight-current-blue">SEG</span>+<span class="fragment highlight-current-red">ABC:123</span>+<span class="fragment highlight-current-red">DEF:456</span>'</p>
+							<p class="fade-in">SEG<span class="fragment highlight-green">+</span>ABC:123<span class="fragment highlight-green">+</span>DEF:456<span class="fragment highlight-blue">'</span></p>
+						</div>
+						
+						<aside class="notes">
+							<p>Segment name</p>
+							<p>Data units</p>
+							<p>Separators</p>
+							<p>Segment end</p>
+						</aside>
+					</section>
+					
+					<section>
+						<h3>Data Units</h3>
+						
+						<div>
+							<p><span class="fragment highlight-current-red">ABC</span>:<span class="fragment highlight-current-blue">123</span></p>
+							<p class="fragment"><span class="fragment highlight-current-red">ABC</span>:<span class="fragment highlight-blue">12345</span>:<span class="fragment highlight-blue">AB12</span>:<span class="fragment highlight-blue">345</span></p>
+						</div>
+						
+						<aside class="notes">
+							<p>Data units</p>
+							<p>Text element identifier (TEI)</p>
+							<p>Text element</p>
+							<p>Composite data units</p>
+						</aside>
+					</section>
+					
+					<!--<section>
+						<h3>Example: Ordering </h3>
+					</section>-->
+					
+					<section>
+						<h3>CSNIPD Structure</h3>
+						
+						<div>
+							<img src="img/Bal2024nord012801.png" alt="CSNIPD message structure" style="width: 70%; vertical-align: top"/>
+						</div>
+						
+					</section>
+					
+					<section>
+						<h3>CSNIPD Segments (1)</h3>
+						
+						<div>
+							<img src="img/Bal2024nord012802.png" alt="CSNIPD segments defined in spec (part 1)" style="width: 40%; vertical-align: top"/>
+						</div>
+						
+					</section>
+					
+					<section>
+						<h3>CSNIPD Segments (2)</h3>
+						
+						<div>
+							<img src="img/csnipd-segments-2.png" alt="CSNIPD segments defined in spec (part 2)" style="width: 40%; vertical-align: top"/>
+						</div>
+						
+					</section>
+					
+					<section>
+						<h3>CSNIPD Example</h3>
+						
+						<img src="img/csnipd-example.png" alt="CSNIPD message example from the S2000M spec" style="width: 45%"/>
+						
+						<aside class="notes">
+							<p>Initial provisioning</p>
+							<p>The CSNIPD is then commented on, amended</p>
+							<p>The spec provides definitions for all message structures</p>
+						</aside>
+					</section>
+					
+					<section>
+						<p>...and 7 other message types</p>
 					</section>
 				</section>
 				
