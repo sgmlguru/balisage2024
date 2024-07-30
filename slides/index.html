@@ -862,6 +862,54 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</code
 				</section>
 				
 				
+				<!-- XML -->
+				<section data-background="img/Word_processors_at_NIHE.png" data-background-size="100%" data-background-opacity="0.40">
+					
+					<section>
+						<h3>Now That I've Got the XML...</h3>
+						
+						<p class="fragment">...wouldn't it be nice to author S2000M 2.1 messages in it?</p>
+					</section>
+					
+					<section>
+						<h3>Validation</h3>
+						
+						<ul>
+							<li class="fragment">Schema (DTD)</li>
+							<li class="fragment">Schematron rules</li>
+						</ul>
+						
+						<aside class="notes">
+							<p>Together these should cover everything we need</p>
+						</aside>
+					</section>
+					
+					<section>
+						<h3>Generating a DTD</h3>
+						
+						<!-- Minimum examples, maximum examples -->
+						<div class="r-stack">
+							<img class="current-visible" src="img/min-max-xml.png" alt="Min and max XML examples" style="width: 70%"/>
+							<img class="fragment" src="img/generate-dtd.png" alt="Generating a DTD dialog in oXygen" style="width: 70%"/>
+							<!--<img class="fragment" src="img/dtd.png" alt="Generated DTD fragment" style="width: 70%"/>-->
+						</div>
+						
+						
+						<!-- Serialise to XML, generate DTD -->
+					</section>
+					
+					<section>
+						<h3>Add to the DTD</h3>
+						
+						<pre class="txt" style="font-size: 20pt;">
+							<code data-trim data-noescape data-line-numbers="1-4|3">&lt;!ELEMENT CBS (ASP?,NIL?,RTX?,SMF?,MFM?,DFL?)&gt;
+&lt;!ATTLIST CBS
+level CDATA #FIXED &quot;2&quot;
+segend CDATA #REQUIRED&gt;</code>
+						</pre>
+					</section>
+					
+				</section>
 				
 				
 				<!-- Further developments -->
