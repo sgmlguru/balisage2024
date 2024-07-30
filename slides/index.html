@@ -868,7 +868,7 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</code
 					<section>
 						<h3>Now That I've Got the XML...</h3>
 						
-						<p class="fragment">...wouldn't it be nice to author S2000M 2.1 messages in it?</p>
+						<p>...wouldn't it be nice to author S2000M messages in it?</p>
 					</section>
 					
 					<section>
@@ -891,11 +891,46 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</code
 						<div class="r-stack">
 							<img class="current-visible" src="img/min-max-xml.png" alt="Min and max XML examples" style="width: 70%"/>
 							<img class="fragment" src="img/generate-dtd.png" alt="Generating a DTD dialog in oXygen" style="width: 70%"/>
-							<!--<img class="fragment" src="img/dtd.png" alt="Generated DTD fragment" style="width: 70%"/>-->
+							
+							<pre class="txt fragment" style="font-size: 20pt;">
+								<code data-trim data-noescape data-line-numbers="1-35">&lt;!ELEMENT IPP (#PCDATA)&gt;
+&lt;!ATTLIST IPP
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT MTP (#PCDATA)&gt;
+&lt;!ATTLIST MTP
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT ISS (#PCDATA)&gt;
+&lt;!ATTLIST ISS
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT TOD (#PCDATA)&gt;
+&lt;!ATTLIST TOD
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT ADD (#PCDATA)&gt;
+&lt;!ATTLIST ADD
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT FID (#PCDATA)&gt;
+&lt;!ATTLIST FID
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT MOI (#PCDATA)&gt;
+&lt;!ATTLIST MOI
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT DRS (#PCDATA)&gt;
+&lt;!ATTLIST DRS
+xmlns CDATA #FIXED &apos;&apos;&gt;
+
+&lt;!ELEMENT DRD (#PCDATA)&gt;
+&lt;!ATTLIST DRD
+xmlns CDATA #FIXED &apos;&apos;&gt;</code>
+							</pre>
 						</div>
 						
-						
-						<!-- Serialise to XML, generate DTD -->
 					</section>
 					
 					<section>
