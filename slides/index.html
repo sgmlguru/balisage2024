@@ -130,6 +130,12 @@
 						<h3>Which Is All Fine and Well, Until...</h3>
 						
 						<img src="img/bulldozer.jpg" alt="Bulldozer" style="width: 50%" class="fragment"/>
+						
+						<aside class="notes">
+							<p>House w/ mainframe to be demolished</p>
+							<p>Started in the late 60s</p>
+							<p>Upgraded fro S2000M in the late 80s and early 90s</p>
+						</aside>
 					</section>
 				</section>
 				
@@ -143,11 +149,13 @@
 					<section>
 						<h3>S2000M</h3>
 						<ul>
-							<li>First usable - used - version was 2.1 in 1992</li>
+							<li>First production issue was 2.1 in 1992</li>
 							<li>The work started a decade earlier</li>
 						</ul>
 						
 						<!-- Add messaging image -->
+						<img src="img/cropped-S2000M_logo-1.png" alt="S2000M logo" style="width: 30%"/>
+						<p><a href="https://www.s2000m.org/">https://www.s2000m.org/</a></p>
 					</section>
 					
 					<section>
@@ -177,10 +185,6 @@
 					
 					<section>
 						<h3>Segments</h3>
-						
-						<!--<pre class="txt" style="font-size: 18pt; text-align: center;">
-							<code data-trim data-noescape></code>
-						</pre>-->
 						
 						<div class="r-stack">
 							<p class="fade-out"><span class="fragment highlight-current-blue">SEG</span>+<span class="fragment highlight-current-red">ABC:123</span>+<span class="fragment highlight-current-red">DEF:456</span>'</p>
@@ -218,6 +222,7 @@
 					</section>
 					
 					<section>
+						<h3>Data Typing</h3>
 						<div>
 							<p>a3</p>
 							<p><q>ABC</q></p>
@@ -225,6 +230,7 @@
 					</section>
 					
 					<section>
+						<h3>Data Typing</h3>
 						<div>
 							<p>an..5</p>
 							<p><q>A2B3C</q>, <q>A</q>, <q></q></p>
@@ -232,6 +238,8 @@
 					</section>
 					
 					<section>
+						<h3>Data Typing</h3>
+						
 						<img src="img/segment-data-types.png" alt="Segment data types" style="width: 90%"/>
 						
 						<p class="fragment">TEIs all have well-defined (and narrow) data typing</p>
@@ -324,16 +332,29 @@
 					</section>
 					
 					<section>
-						<!-- Can't upgrade to S2000M issue 7.0 -->
-						<!-- 2.1 is a contract -->
-						<!-- And there's no time -->
-						<!-- Off-the-shelf products do exist but bring other problems -->
-						<!-- Also, do we want to implement a 30+ old standard now, when we will upgrade sooner or later anyway? -->
+						<ul>
+							<li>S2000M 2.1 is a contract</li>
+							<li>Very little time</li>
+							<li>No real off-the-shelf alternatives</li>
+						</ul>
+						
+						<p class="fragment">Also, do we really want to implement a 30+ old standard now?</p>
+						
+						<aside class="notes">
+							<p>There is 7.1 but upgrade not feasible now (later, sure!)</p>
+							<p>That building is coming down SOON</p>
+							<p>Off-the-shelf</p>
+							<p>Implementing something from scratch?</p>
+						</aside>
 					</section>
 					
 					<section>
-						<!-- iXML -->
-						<!-- Wondering if there is something else we can do... -->
+						<p>Is there anything else we can do?</p>
+						<img src="img/ixml-logo.png" alt="iXML logo" style="width: 20%" class="fragment"/>
+						
+						<aside class="notes">
+							<p>I guess the title gave it away</p>
+						</aside>
 					</section>
 					
 				</section>
@@ -343,12 +364,13 @@
 				<section data-background="img/ixml-logo.png" data-background-size="50%" data-background-opacity="0.25">
 					
 					<section>
-						<h3>iXML to the Rescue</h3>
+						<h3>S2000M 2.1 as an iXML grammar?</h3>
 						
 						<p class="fragment"><a href="https://invisiblexml.org/">https://invisiblexml.org/</a></p>
 						
 						<aside class="notes">
 							<p>I won't explain it further, but...</p>
+							<p>I'd done an iXML project recently (XML Prague paper)</p>
 						</aside>
 					</section>
 					
@@ -934,7 +956,7 @@ xmlns CDATA #FIXED &apos;&apos;&gt;</code>
 					</section>
 					
 					<section>
-						<h3>Add to the DTD</h3>
+						<h3>Additions to the DTD</h3>
 						
 						<pre class="txt" style="font-size: 20pt;">
 							<code data-trim data-noescape data-line-numbers="1-4|3">&lt;!ELEMENT CBS (ASP?,NIL?,RTX?,SMF?,MFM?,DFL?)&gt;
@@ -942,6 +964,11 @@ xmlns CDATA #FIXED &apos;&apos;&gt;</code>
 level CDATA #FIXED &quot;2&quot;
 segend CDATA #REQUIRED&gt;</code>
 						</pre>
+						
+						<aside class="notes">
+							<p>@level is nowhere to be found in the format itself</p>
+							<p>But the spec defines it</p>
+						</aside>
 					</section>
 					
 				</section>
@@ -993,6 +1020,8 @@ segend CDATA #REQUIRED&gt;</code>
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				
+				slideNumber: false,
 
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom ]
