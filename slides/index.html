@@ -968,7 +968,206 @@ segend CDATA #REQUIRED&gt;</code>
 						<aside class="notes">
 							<p>@level is nowhere to be found in the format itself</p>
 							<p>But the spec defines it</p>
+							<p>Don't generate too early</p>
+							<p>DTD useful enough</p>
 						</aside>
+					</section>
+					
+					<section>
+						<h3>Schematron</h3>
+						
+						<p>There are some obvious wins</p>
+						
+						<pre class="txt fragment" style="font-size: 16pt;">
+							<code data-trim data-noescape>UNH = -"UNH", sep, msg-no-0062, ... segend .
+								...
+UNT = -"UNT", sep, ... msg-no-0062, segend .</code>
+						</pre>
+						
+						<pre class="xml fragment" style="font-size: 16pt;">
+							<code data-trim data-noescape>&lt;UNH segend="&amp;#10;">
+	&lt;msg-no-0062>123456&lt;/msg-no-0062>
+	...
+&lt;/UNH>
+
+...
+
+&lt;UNT segend="">
+	...
+	&lt;msg-no-0062>ABCD1234567812&lt;/msg-no-0062>
+&lt;/UNT></code>
+						</pre>
+						
+						<aside class="notes">
+							<p>Sanity checks: Message header and trailer</p>
+							<p>msg-no-0062 should be the same</p>
+							<p>Here, they are not</p>
+						</aside>
+						
+					</section>
+					
+					<section>
+						<h3>Schematron</h3>
+						
+						<p>Data typing is a lot easier in Schematron</p>
+						
+						<div class="fragment">
+							<pre class="txt" style="font-size: 18pt;">
+								<code data-trim data-noescape>an..20</code>
+							</pre>
+							
+							<pre class="txt" style="font-size: 18pt;">
+								<code data-trim data-noescape>-an0-20 = (an? | an, an | ...) .</code>
+							</pre>
+						</div>
+						
+						<div class="fragment">
+							<pre class="xml" style="font-size: 10pt;">
+								<code data-trim data-noescape>&lt;sch:rule context=&quot;CIS/ILS&quot;&gt;
+    &lt;sch:assert test=&quot;string-length(text()) &amp;lt;=20&quot;&gt;The data type for ILS in segment CIS is &apos;an..20&apos; but the actual number of characters is &lt;sch:value-of select=&quot;string-length(text())&quot;/&gt;.&lt;/sch:assert&gt;
+&lt;/sch:rule&gt;</code>
+							</pre>
+							
+							<pre class="xml" style="font-size: 10pt;">
+								<code data-trim data-noescape>&lt;sch:rule context=&quot;CIS/ILS&quot;&gt;
+    &lt;sch:assert test=&quot;matches(text(), &apos;^([A-Z]|[0-9]|[ !\.,(;&amp;amp;&amp;lt;&amp;gt;%*=),&amp;#34;-/])+$&apos;)&quot;&gt;The data type for ILS in segment CIS is &apos;an..20&apos; but the actual characters used are &lt;sch:value-of select=&quot;.&quot;/&gt;.&lt;/sch:assert&gt;
+&lt;/sch:rule&gt;</code>
+							</pre>
+						</div>
+						
+						<p class="fragment">These are generated from a spreadsheet provided by the working group</p>
+						
+						<aside class="notes">
+							<p>Data typing is a lot easier in Schematron</p>
+						</aside>
+						
+					</section>
+					
+					<section>
+						<p>(etc)</p>
+					</section>
+					
+					<section>
+						<h3>Authoring</h3>
+						
+						<div class="fragment">
+							<p>In oXygen or similar, it's a matter of adding a framework</p>
+							<img src="img/CSNIPD-xml-with-css.png" style="width: 30%" alt="CSNIPD XML with some CSS"/>
+						</div>
+						
+						<div class="fragment">
+							<p>But really, a form-based approach (XForms!) is better</p>
+						</div>
+						
+						<aside class="notes">
+							<p></p>
+						</aside>
+						
+					</section>
+					
+					<section>
+						<h3>Publishing</h3>
+						
+						<p>Essentially a roundtrip</p>
+						
+						<pre class="xml" style="font-size: 9pt;">
+							<code data-trim data-noescape>&lt;xsl:stylesheet
+    xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
+    xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+    xmlns:math=&quot;http://www.w3.org/2005/xpath-functions/math&quot;
+    exclude-result-prefixes=&quot;xs math&quot;
+    version=&quot;3.0&quot;&gt;
+    
+    &lt;!-- Converts S2MXML to S2000M 2.1 message format --&gt;
+    
+    &lt;xsl:output method=&quot;text&quot; indent=&quot;0&quot;/&gt;
+    
+    
+    &lt;xsl:template match=&quot;/&quot;&gt;
+        &lt;xsl:apply-templates select=&quot;*&quot;/&gt;
+    &lt;/xsl:template&gt;
+    
+    
+    &lt;!-- The message type is special and should only pass through --&gt;
+    &lt;xsl:template
+        match=&quot;CSNIPD&quot;
+        priority=&quot;10&quot;&gt;
+        &lt;xsl:apply-templates select=&quot;*&quot;/&gt;
+    &lt;/xsl:template&gt;
+    
+    
+    &lt;!-- Segments always have @segend; we don&apos;t want to process headers or trailers here --&gt;
+    &lt;xsl:template match=&quot;*[@segend and not(self::UNH) and not(self::UNT)]&quot;&gt;
+        &lt;xsl:value-of select=&quot;name(.) || &apos;+&apos;&quot;/&gt;
+        &lt;xsl:for-each select=&quot;*[not(@segend)]&quot;&gt;
+            &lt;xsl:choose&gt;
+                &lt;!-- Composite elements --&gt;
+                &lt;xsl:when test=&quot;*&quot;&gt;
+                    &lt;xsl:value-of select=&quot;name(.) || &apos;+&apos;&quot;/&gt;
+                    &lt;xsl:for-each select=&quot;*&quot;&gt;
+                        &lt;xsl:value-of select=&quot;text()&quot;/&gt;
+                        &lt;xsl:if test=&quot;following-sibling::*&quot;&gt;
+                            &lt;xsl:value-of select=&quot;&apos;:&apos;&quot;/&gt;
+                        &lt;/xsl:if&gt;
+                    &lt;/xsl:for-each&gt;
+                &lt;/xsl:when&gt;
+                
+                &lt;!-- Regular key/value data units --&gt;
+                &lt;xsl:otherwise&gt;
+                    &lt;xsl:value-of select=&quot;name(.) || &apos;:&apos; || normalize-space(text()[1])&quot;/&gt;
+                &lt;/xsl:otherwise&gt;
+            &lt;/xsl:choose&gt;
+            
+            &lt;!-- Separator if more data units follow (child segments should be excluded) --&gt;
+            &lt;xsl:if test=&quot;following-sibling::*[not(@segend)]&quot;&gt;
+                &lt;xsl:value-of select=&quot;&apos;+&apos;&quot;/&gt;
+            &lt;/xsl:if&gt;
+        &lt;/xsl:for-each&gt;
+        
+        &lt;!-- Segment end --&gt;
+        &lt;xsl:text&gt;&amp;apos;&amp;#x0a;&lt;/xsl:text&gt;
+        
+        &lt;!-- Child segments --&gt;
+        &lt;xsl:apply-templates select=&quot;*[@segend]&quot;/&gt;
+    &lt;/xsl:template&gt;
+    
+    
+    &lt;!-- Message headers and trailers --&gt;
+    &lt;xsl:template match=&quot;UNH | UNT&quot;&gt;
+        &lt;xsl:value-of select=&quot;name(.) || &apos;+&apos;&quot;/&gt;
+        &lt;xsl:apply-templates select=&quot;*&quot; mode=&quot;UN&quot;/&gt;
+        &lt;xsl:text&gt;&amp;apos;&amp;#x0a;&lt;/xsl:text&gt;
+    &lt;/xsl:template&gt;
+    
+    
+    &lt;!-- Header and trailer syntax differs from message body --&gt;
+    &lt;xsl:template match=&quot;*&quot; mode=&quot;UN&quot;&gt;
+        &lt;xsl:choose&gt;
+            &lt;xsl:when test=&quot;*&quot;&gt;
+                &lt;xsl:for-each select=&quot;*&quot;&gt;
+                    &lt;xsl:value-of select=&quot;text()&quot;/&gt;
+                    &lt;xsl:if test=&quot;following-sibling::*&quot;&gt;
+                        &lt;xsl:value-of select=&quot;&apos;:&apos;&quot;/&gt;
+                    &lt;/xsl:if&gt;
+                &lt;/xsl:for-each&gt;
+            &lt;/xsl:when&gt;
+            &lt;xsl:otherwise&gt;
+                &lt;xsl:value-of select=&quot;normalize-space(text())&quot;/&gt;
+            &lt;/xsl:otherwise&gt;
+        &lt;/xsl:choose&gt;
+        &lt;xsl:if test=&quot;following-sibling::*&quot;&gt;
+            &lt;xsl:value-of select=&quot;&apos;+&apos;&quot;/&gt;
+        &lt;/xsl:if&gt;
+    &lt;/xsl:template&gt;
+    
+    
+    &lt;xsl:template match=&quot;text()&quot;&gt;
+        &lt;xsl:value-of select=&quot;normalize-space(.)&quot;/&gt;
+    &lt;/xsl:template&gt;
+    
+    
+&lt;/xsl:stylesheet&gt;</code>
+						</pre>
 					</section>
 					
 				</section>
