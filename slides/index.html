@@ -44,11 +44,7 @@
 					<section>
 						<h3>Aerospace and Techpubs</h3>
 						
-						<div class="r-stack">
-							<img src="img/TF33_engine_at_Davis-Monthan_AFB_1984.jpg" alt="TF33 engine repair" style="width: 60%" class=""/>
-							
-							<img src="img/707-spares-online.png" alt="707 engines" style="width: 75%" class="fragment"/>
-						</div>
+						<img src="img/TF33_engine_at_Davis-Monthan_AFB_1984.jpg" alt="TF33 engine repair" style="width: 60%"/>
 						
 						<aside class="notes">
 							<p>FAA, servicing, parts, logistics</p>
@@ -67,7 +63,7 @@
 						</div>
 						
 						<aside class="notes">
-							<p>ATA 2200</p>
+							<p>ATA 100 and 2200 (NEXT)</p>
 							<p>S1000D - SGML</p>
 							<p>Note S1000D now XML</p>
 						</aside>
@@ -80,28 +76,11 @@
 						<img src="img/cfm56-engine.jpg" alt="CFM56 engine" style="width: 60%"/>
 						
 						<aside class="notes">
-							<p>Hundreds (sometimes thousands) of partners</p>
-							<p>And nations (miltary)</p>
+							<p>Hundreds (thousands) of partners/nations</p>
 							<p>Engines develop and change over time</p>
-						</aside>
-					</section>
-					
-					<!-- The aerospace industry is conservative -->
-					<!-- No parts information exchange and planes are grounded -->
-					<!-- So, momentum and an unwillingness to change (unless you have to) -->
-					
-					<!-- Unlike S1000D, this used a text-based (ISO) format -->
-					<!-- HD, RAM expensive, so space-saving measures -->
-					
-					<section>
-						<h3>Initial Provisioning (IP)</h3>
-						
-						<img src="img/closeup-highbypass-turbofan-aircraft-engine-near-passenger-aircraft-hangar-1-1-1024x683.jpg" alt="Closeup turbofan engine" style="width: 60%"/>
-						
-						<aside class="notes">
-							<p>Initial provisioning, essentially parts information exchange</p>
-							<p>Goes on for decades</p>
-							<p>No parts information exchange and planes are grounded</p>
+							<p>Initial provisioning => parts information exchange</p>
+							<p>Decades!</p>
+							<p>No parts => planes grounded</p>
 						</aside>
 					</section>
 					
@@ -109,17 +88,17 @@
 						<h3>Messaging and S2000M</h3>
 						
 						<div class="r-stack">
-							<img src="img/s2000m-2.1-cover.png" alt="S2000M issue 2.1 cover page" style="width: 35%"/>
-							<img src="img/Woman_inspecting_FOSDIC_film.jpg" alt="Woman inspecting FOSDIC film" style="width: 45%" class="fragment"/>
+							<img src="img/s2000m-2.1-cover.png" alt="S2000M issue 2.1 cover page" style="width: 40%"/>
+							<img src="img/Woman_inspecting_FOSDIC_film.jpg" alt="Woman inspecting FOSDIC film" style="width: 50%" class="fragment"/>
 						</div>
 						
 						<p class="fragment">Just customise the mainframe</p>
 						
 						<aside class="notes">
-							<p>Messaging - initial part, mods, observations, etc</p>
-							<p>Text-based (ISO format adapted)</p>
-							<p>But the aerospace industry is conservative</p>
-							<p>Exisrting systems were adapted - mainframes</p>
+							<p>Messaging - initial, mods, observations, etc</p>
+							<p>Text-based (ISO) (NEXT)</p>
+							<p>Aerospace industry conservative</p>
+							<p>Old system (1960s mainframe) adapted</p>
 							<p>Which is fine and well, until</p>
 						</aside>
 					</section>
@@ -127,14 +106,14 @@
 					<!-- Until the day the word comes that the building with the mainframe will be torn down -->
 					<!-- Explanation of mainframe age, upgrade 35 years ago -->
 					<section>
-						<h3>Which Is All Fine and Well, Until...</h3>
+						<h3>Uh-Oh</h3>
 						
-						<img src="img/bulldozer.jpg" alt="Bulldozer" style="width: 50%" class="fragment"/>
+						<img src="img/bulldozer.jpg" alt="Bulldozer" style="width: 50%"/>
 						
 						<aside class="notes">
 							<p>House w/ mainframe to be demolished</p>
-							<p>Started in the late 60s</p>
-							<p>Upgraded fro S2000M in the late 80s and early 90s</p>
+							<p>Started in late 60s</p>
+							<p>Upgraded to S2000M in late 80s and early 90s</p>
 						</aside>
 					</section>
 				</section>
@@ -168,6 +147,7 @@
 						</ul>
 						
 						<p class="fragment">All in all, 8 distinct types (plus one for error messages)</p>
+						<p class="fragment">Think of it as a (complex) email thread</p>
 					</section>
 					
 					<section>
@@ -179,7 +159,7 @@
 							<p>Left to right</p>
 							<p>Headers and trailers</p>
 							<p>Segments and child segments</p>
-							<p>Segments are lists of key/value pairs</p>
+							<p>Lists of key/value pairs</p>
 						</aside>
 					</section>
 					
@@ -200,7 +180,7 @@
 					</section>
 					
 					<section>
-						<h3>Data Units</h3>
+						<h3>Data Units ("TEI")</h3>
 						
 						<div>
 							<p><span class="fragment highlight-current-red">ABC</span>:<span class="fragment highlight-current-blue">123</span></p>
@@ -242,7 +222,7 @@
 						
 						<img src="img/segment-data-types.png" alt="Segment data types" style="width: 90%"/>
 						
-						<p class="fragment">TEIs all have well-defined (and narrow) data typing</p>
+						<p>TEIs all have well-defined (and narrow) data typing</p>
 						
 						<aside class="notes">
 							<p>TEIs all have well-defined and narrow data typing</p>
@@ -259,27 +239,15 @@
 					</section>
 					
 					<section>
-						<h3>CSNIPD Segments (1)</h3>
+						<h3>CSNIPD Segments</h3>
 						
 						<div>
 							<img src="img/Bal2024nord012802.png" alt="CSNIPD segments defined in spec (part 1)" style="width: 40%; vertical-align: top"/>
-						</div>
-						
-						<aside class="notes">
-							<p>They've helpfully expanded the names of the actual TEIs</p>
-							<p>But this is just the first half</p>
-						</aside>
-						
-					</section>
-					
-					<section>
-						<h3>CSNIPD Segments (2)</h3>
-						
-						<div>
 							<img src="img/csnipd-segments-2.png" alt="CSNIPD segments defined in spec (part 2)" style="width: 40%; vertical-align: top"/>
 						</div>
 						
 						<aside class="notes">
+							<p>They've helpfully expanded the names of the actual TEIs</p>
 							<p>CSNIPD, having to do with initial provisioning of parts, is a big one.</p>
 							<p>Most of the others are shorter, as they need to deal with things declared here</p>
 						</aside>
@@ -314,16 +282,17 @@
 					<section>
 						<p>Aerospace is a surprisingly conservative industry</p>
 						
-						<ul>
-							<li class="fragment">No parts means planes are grounded</li>
-							<li class="fragment">Grounding planes is ridiculously expensive</li>
-							<li class="fragment">They need the latest technologies...</li>
-							<li class="fragment">...but they want to use them forever</li>
+						<ul class="fragment">
+							<li>No parts means planes are grounded</li>
+							<li>Grounding planes is ridiculously expensive</li>
 						</ul>
 						
+						<p class="fragment">You need a motivator!</p>
+						
 						<aside class="notes">
+							<p>Why? Due to a simple, basic truth about the industry. (NEXT)</p>
 							<p>Ask Boeing how much it costs</p>
-							<p>But remember...</p>
+							<p>You need something to drive the change (NEXT)</p>
 						</aside>
 					</section>
 					
@@ -332,6 +301,7 @@
 					</section>
 					
 					<section>
+						<p>But:</p>
 						<ul>
 							<li>S2000M 2.1 is a contract</li>
 							<li>Very little time</li>
@@ -366,7 +336,7 @@
 					<section>
 						<h3>S2000M 2.1 as an iXML grammar?</h3>
 						
-						<p class="fragment"><a href="https://invisiblexml.org/">https://invisiblexml.org/</a></p>
+						<p><a href="https://invisiblexml.org/">https://invisiblexml.org/</a></p>
 						
 						<aside class="notes">
 							<p>I won't explain it further, but...</p>
@@ -377,10 +347,10 @@
 					<section>
 						<h3>S2000M 2.1 as an iXML Grammar?</h3>
 						
-						<p>Given this made-up CSN message...</p>
+						<p>Given this made-up CSNIPD message...</p>
 						
 						<pre class="txt" style="font-size: 8pt;">
-							<code data-trim data-noescape data-line-numbers="|2|4|5|10-11">UNH+123456+CD3456:EF1:FD3:C1:ABC123+1234567890ABCDEFGHIJ012345678912345+12:C'
+							<code data-trim data-noescape data-line-numbers="|4|5|10-11">UNH+123456+CD3456:EF1:FD3:C1:ABC123+1234567890ABCDEFGHIJ012345678912345+12:C'
 IPH+IPP:F61170026+MTP:CSNIPD+ISS:D1+TOD:F6117+ADD:D1234+FID:S+MOI:1X+DRS:004+DRD:201088+LGE:UK+IPS:LANDING GEAR ASSY+DRR:AB123456'
 VAS+CHG:N+SID:12345:X1234999999999999+SNS:1234:123456789'
 OHS+OSN:1+OBS:TESTING THIS'
@@ -404,8 +374,7 @@ UNT+123456+ABCD1234567812'</code>
 						</pre>
 						
 						<aside class="notes">
-							<p>Segments - note segend</p>
-							<p>Data units (TEIs and their values)</p>
+							<p>Segments and data units (TEIs) - note segend</p>
 							<p>Composite TEIs</p>
 							<p>...and segment nesting (not in the text format itself!)</p>
 						</aside>
@@ -897,12 +866,13 @@ PGS = -"PGS", (sep, SUU)?, (sep, SPU)?, (sep, WUU)?, (sep, WPU)?, segend .</code
 						<h3>Validation</h3>
 						
 						<ul>
-							<li class="fragment">Schema (DTD)</li>
-							<li class="fragment">Schematron rules</li>
+							<li>Schema (DTD)</li>
+							<li>Schematron rules</li>
 						</ul>
 						
 						<aside class="notes">
 							<p>Together these should cover everything we need</p>
+							<p>But rather than writing a DTD I generated it</p>
 						</aside>
 					</section>
 					
@@ -952,6 +922,14 @@ xmlns CDATA #FIXED &apos;&apos;&gt;
 xmlns CDATA #FIXED &apos;&apos;&gt;</code>
 							</pre>
 						</div>
+						
+						<aside class="notes">
+							<p>Create minimum and maximum examples</p>
+							<p>Should be possible to generate</p>
+							<p>Serialise to XML (NEXT)</p>
+							<p>Generate DTD (NEXT)</p>
+							<p>Some things can't be generated (NEXT)</p>
+						</aside>
 						
 					</section>
 					
